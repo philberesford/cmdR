@@ -1,0 +1,22 @@
+﻿<Window x:Class="cmdR.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="780">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65" />
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Grid.Row="0" FontFamily="Segoe UI Mono" 
+                 Background="#ff000000" Foreground="DarkOrange" KeyUp="OnKeyUpHandler"
+                 Text="{Binding Command, Mode=TwoWay}" />
+
+        <Rectangle Fill="#FF242424" Grid.Row="1" />
+        <ScrollViewer Name="_scrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Segoe UI Mono"
+                       Foreground="DarkOrange" Text="{Binding Output}" Name="_output" />
+        </ScrollViewer>
+
+    </Grid>
+</Window>

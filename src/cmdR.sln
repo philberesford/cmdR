@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmdR.Tests", "cmdR.Tests\cm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmdR.UI.Dos", "CmdR.UI.Dos\cmdR.UI.Dos.csproj", "{833312A5-C7CA-4859-AC63-F3B92BBBC9CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmdR.UI", "cmdR.UI\cmdR.UI.csproj", "{A2B57F16-DAD3-48E3-931C-F0A7C1878EBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{833312A5-C7CA-4859-AC63-F3B92BBBC9CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{833312A5-C7CA-4859-AC63-F3B92BBBC9CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{833312A5-C7CA-4859-AC63-F3B92BBBC9CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2B57F16-DAD3-48E3-931C-F0A7C1878EBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B57F16-DAD3-48E3-931C-F0A7C1878EBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B57F16-DAD3-48E3-931C-F0A7C1878EBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B57F16-DAD3-48E3-931C-F0A7C1878EBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
