@@ -47,9 +47,6 @@ namespace cmdR
             _commandParser = parser;
             _commandRouter = routing;
             _routeParser = routeParser;
-
-            this.RegisterRoute("help route?", ListAllTheCommands, "lists all the commands, or details about any commands which start with the supplied name if specified");
-            this.RegisterRoute("? route?", ListAllTheCommands, "lists all the commands, or details about any commands which start with the supplied name if specified");
         }
 
 
@@ -117,37 +114,6 @@ namespace cmdR
             while (!_state.ExitCodes.Contains(command));
         }
 
-
-
-        private void ListAllTheCommands(IDictionary<string, string> parameters, ICmdRConsole console, ICmdRState state)
-        {
-            if (parameters.ContainsKey("route"))
-            {
-                if (state.Routes.Any(x => x.Name.StartsWith(parameters["route"])))
-                {
-                    var route = state.Routes.Single(x => x.Name == parameters["route"]);
-
-                    console.Write("  {0}", route.Name);
-
-                    foreach (var p in route.GetParameters())
-                        console.Write(p.Value == ParameterType.Required ? " {0}" : " {0}?", p.Key);
-                    
-                    console.WriteLine("");
-                    if (!string.IsNullOrEmpty(route.Description))
-                        console.WriteLine("  " + route.Description);
-                }
-                else console.WriteLine("  unknown command name [{0}]", parameters["route"]);
-            }
-            else
-            {
-                console.WriteLine("");
-
-                foreach (var route in state.Routes)
-                    console.Write("{0}", route.Name.PadRight(20));
-
-                console.WriteLine("");
-            }
-        }
 
         public void AutoRegisterCommands()
         {
