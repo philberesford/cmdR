@@ -140,6 +140,8 @@ namespace cmdR
             }
             else
             {
+                console.WriteLine("");
+
                 foreach (var route in state.Routes)
                     console.Write("{0}", route.Name.PadRight(20));
 

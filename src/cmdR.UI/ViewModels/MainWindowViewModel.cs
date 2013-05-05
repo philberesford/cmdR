@@ -16,13 +16,21 @@ namespace cmdR.UI.ViewModels
 
         public string Command { get; set; }
         public string Output { get; set; }
+        public string CmdPrompt { get { return _cmdR.State.CmdPrompt; } }
 
         public MainWindowViewModel(Dispatcher dispatcher) : base(dispatcher)
         {
             _cmdR = new CmdR(console: new WPFConsole(this));
             _cmdR.State.Variables.Add("path", GetUserDirectory());
+            _cmdR.Console.WriteLine("Welcome to CmdR :D");
             
-            InvokeOnBackgroundThread(() => _cmdR.AutoRegisterCommands());
+            InvokeOnBackgroundThread(() => {
+                    _cmdR.Console.WriteLine("Discovering commands, please wait...");
+                    _cmdR.AutoRegisterCommands();
+                    _cmdR.Console.WriteLine("{0} commands found", _cmdR.State.Routes.Count);
+                    
+                    NotifyPropertyChanged("Output");
+                });
         }
 
         private string GetUserDirectory()
