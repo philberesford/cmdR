@@ -74,6 +74,7 @@
     <Compile Include="Route.cs" />
     <Compile Include="RouteParser.cs" />
     <Compile Include="Routing.cs" />
+    <Compile Include="StdModules\CoreModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NuGet\cmdR.nuspec" />

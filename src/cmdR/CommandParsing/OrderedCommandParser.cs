@@ -67,5 +67,10 @@ namespace cmdR.CommandParsing
 
             throw new InvalidCommandException("The command is invalid, we could not bind the parameters to any route which have been setup");
         }
+
+        public bool HasRoutes()
+        {
+            return _routes.Any();
+        }
     }
 }

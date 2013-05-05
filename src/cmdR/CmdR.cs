@@ -81,7 +81,8 @@ namespace cmdR
             if (string.IsNullOrEmpty(command))
                 return;
 
-            _commandParser.SetRoutes(_commandRouter.GetRoutes());
+            if (!_commandParser.HasRoutes())
+                _commandParser.SetRoutes(_commandRouter.GetRoutes());
 
             var commandName = "";
             var parameters = _commandParser.Parse(command, out commandName);

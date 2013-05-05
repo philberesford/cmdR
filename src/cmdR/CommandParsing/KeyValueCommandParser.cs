@@ -44,5 +44,10 @@ namespace cmdR.CommandParsing
 
             return result;
         }
+
+        public bool HasRoutes()
+        {
+            return true;
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace cmdR
                 foreach (var r in matchingRoutes)
                 {
                     if (route.Match(r.GetParmaNames()))
-                        throw new InvalidRouteException(string.Format("There is already a route registered which matches you route name [{0}] and parameters you supplied", route.Name));
+                        throw new InvalidRouteException(string.Format("There is already a route registered which matches the route name [{0}] and parameters you supplied", route.Name));
                 }
             }
 
