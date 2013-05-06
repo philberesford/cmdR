@@ -19,16 +19,16 @@ namespace cmdR.UI.CmdRModules
 
         public DirectoryModule(CmdR cmdR)
         {
-            Initalise(cmdR);
+            Initalise(cmdR, false);
         }
 
 
-        public void Initalise(CmdR cmdR)
+        public void Initalise(CmdR cmdR, bool overwriteRoutes)
         {
             _cmdR = cmdR;
 
-            cmdR.RegisterRoute("ls search?", List, "list all files and directories in the current path with an optional RegEx search pattern");
-            cmdR.RegisterRoute("cd path", ChangeDirectory, "sets the currently active path, all subsequent commands will be executed within this path");
+            cmdR.RegisterRoute("ls search?", List, "list all files and directories in the current path with an optional RegEx search pattern", overwriteRoutes);
+            cmdR.RegisterRoute("cd path", ChangeDirectory, "sets the currently active path, all subsequent commands will be executed within this path", overwriteRoutes);
         }
 
 

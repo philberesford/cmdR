@@ -36,6 +36,9 @@ namespace cmdR.Plugins.MEF
 
         private CompositionContainer GetContainer(string path)
         {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
             var thisAssembly = new AssemblyCatalog(System.Reflection.Assembly.GetExecutingAssembly());
             var catalog = new AggregateCatalog();
             

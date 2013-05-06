@@ -2,6 +2,6 @@
 {
     public interface ICmdRModule
     {
-        void Initalise(CmdR cmdR);
+        void Initalise(CmdR cmdR, bool overwriteRoutes);
     }
 }

@@ -8,8 +8,8 @@ namespace cmdR.Abstract
 {
     public interface IRouteCommands
     {
-        void RegisterRoute(string commandName, IDictionary<string, ParameterType> parameters, Action<IDictionary<string, string>, ICmdRConsole, ICmdRState> action, string description = null);
-        void RegisterRoute(Route route);
+        void RegisterRoute(string commandName, IDictionary<string, ParameterType> parameters, Action<IDictionary<string, string>, ICmdRConsole, ICmdRState> action, string description = null, bool overwriteRoutes = false);
+        void RegisterRoute(Route route, bool overwriteRoutes = false);
 
         List<IRoute> GetRoutes();
 

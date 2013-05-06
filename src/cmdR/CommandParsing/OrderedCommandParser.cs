@@ -70,7 +70,7 @@ namespace cmdR.CommandParsing
 
         public bool HasRoutes()
         {
-            return _routes.Any();
+            return _routes != null && _routes.Any();
         }
     }
 }

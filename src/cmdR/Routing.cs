@@ -16,21 +16,25 @@ namespace cmdR
         public int Count { get { return _routes.Count; } }
 
 
-        public void RegisterRoute(string name, IDictionary<string, ParameterType> parameters, Action<IDictionary<string, string>, ICmdRConsole, ICmdRState> action, string description = null)
+        public void RegisterRoute(string name, IDictionary<string, ParameterType> parameters, Action<IDictionary<string, string>, ICmdRConsole, ICmdRState> action, string description = null, bool overwriteRoutes = false)
         {
-            this.RegisterRoute(new Route(name, parameters, action, description));
+            this.RegisterRoute(new Route(name, parameters, action, description), overwriteRoutes);
         }
 
-        public void RegisterRoute(Route route)
+        public void RegisterRoute(Route route, bool overwriteRoutes = false)
         {
             var matchingRoutes = _routes.Where(x => x.Name == route.Name).ToList();
-
             if (matchingRoutes.Count > 0)
             {
                 foreach (var r in matchingRoutes)
                 {
                     if (route.Match(r.GetParmaNames()))
-                        throw new InvalidRouteException(string.Format("There is already a route registered which matches the route name [{0}] and parameters you supplied", route.Name));
+                    {
+                        if (overwriteRoutes)
+                            _routes.Remove(r);
+                        else
+                            throw new InvalidRouteException(string.Format("There is already a route registered which matches the route name [{0}] and parameters you supplied", route.Name));
+                    }
                 }
             }
 

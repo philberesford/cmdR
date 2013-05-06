@@ -55,7 +55,7 @@ namespace cmdR
 
 
 
-        public void RegisterRoute(string route, Action<IDictionary<string, string>, ICmdRConsole, ICmdRState> action, string description = null)
+        public void RegisterRoute(string route, Action<IDictionary<string, string>, ICmdRConsole, ICmdRState> action, string description = null, bool overwriteRoutes = false)
         {
             if (string.IsNullOrEmpty(route.Trim()))
                 throw new InvalidRouteException(string.Format("An empty route is invalid", route));
@@ -63,11 +63,11 @@ namespace cmdR
             var name = "";
             var parameters = _routeParser.Parse(route, out name);
             
-            _commandRouter.RegisterRoute(name, parameters, action, description);
+            _commandRouter.RegisterRoute(name, parameters, action, description, overwriteRoutes);
         }
 
 
-        public void RegisterRoute(string route, Action<IDictionary<string, string>, CmdR> action, string description = null)
+        public void RegisterRoute(string route, Action<IDictionary<string, string>, CmdR> action, string description = null, bool overwriteRoutes = false)
         {
             if (string.IsNullOrEmpty(route.Trim()))
                 throw new InvalidRouteException(string.Format("An empty route is invalid", route));
@@ -75,7 +75,7 @@ namespace cmdR
             var name = "";
             var parameters = _routeParser.Parse(route, out name);
 
-            _commandRouter.RegisterRoute(name, parameters, (dictionary, console, state) => action.Invoke(dictionary, this), description);
+            _commandRouter.RegisterRoute(name, parameters, (dictionary, console, state) => action.Invoke(dictionary, this), description, overwriteRoutes);
         }
 
 
@@ -119,17 +119,17 @@ namespace cmdR
         }
 
 
-        public void AutoRegisterCommands()
+        public void AutoRegisterCommands(bool overwriteRoutes = false)
         {
             LoadMefPlugins();
  
-            RegisterModules();
-            RegisterCommands();
+            RegisterModules(overwriteRoutes);
+            RegisterCommands(overwriteRoutes);
 
-            ComplieAndLoadScripts();
+            ComplieAndLoadScripts(overwriteRoutes);
         }
 
-        private void ComplieAndLoadScripts()
+        private void ComplieAndLoadScripts(bool overwriteRoutes)
         {
             Console.WriteLine("Loading and Compiling CSX Scripts");
 
@@ -148,10 +148,16 @@ namespace cmdR
                                        .Where(t => commandType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
                                        .Select(m => (ICmdRCommand)Activator.CreateInstance(m));
 
-                RegisterModules(modules);
-                RegisterCommands(commands);
+                RegisterModules(modules, overwriteRoutes);
+                RegisterCommands(commands, overwriteRoutes);
             }
-            else Console.WriteLine("Unable to compile the scripts into a dll\n", string.Join("\n", compileResult.Diagnostics.Select(x => x.Info.GetMessage())));
+            else
+            {
+                Console.WriteLine("Unable to compile the scripts into a dll\n");
+
+                foreach(var error in compileResult.Diagnostics)
+                    _console.WriteLine("  {0}: {1}", error.Location, error.Info.GetMessage());
+            } 
         }
 
         private void LoadMefPlugins()
@@ -162,7 +168,7 @@ namespace cmdR
             var pluginCount = mefFactory.LoadPlugins();
         }
 
-        private void RegisterModules()
+        private void RegisterModules(bool overwriteRoutes)
         {
             _console.WriteLine("Initalising Modules");
 
@@ -173,17 +179,17 @@ namespace cmdR
                                    .Where(p => type.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract)
                                    .Select(c => (ICmdRModule) Activator.CreateInstance(c));
 
-            RegisterModules(modules);
+            RegisterModules(modules, overwriteRoutes);
         }
 
-        private void RegisterModules(IEnumerable<ICmdRModule> modules)
+        private void RegisterModules(IEnumerable<ICmdRModule> modules, bool overwriteRoutes)
         {
             var count = 0;
             foreach (var module in modules)
             {
                 try
                 {
-                    module.Initalise(this);
+                    module.Initalise(this, overwriteRoutes);
                     count++;
                 }
                 catch (Exception e)
@@ -196,12 +202,12 @@ namespace cmdR
         }
 
 
-        private void RegisterCommands()
+        private void RegisterCommands(bool overwriteRoutes)
         {
-            RegisterCommands(FindAllTypesImplementingICmdRCommand());
+            RegisterCommands(FindAllTypesImplementingICmdRCommand(), overwriteRoutes);
         }
 
-        private void RegisterCommands(IEnumerable<ICmdRCommand> commands)
+        private void RegisterCommands(IEnumerable<ICmdRCommand> commands, bool overwriteRoutes)
         {
             _console.WriteLine("Registering Commands");
 
@@ -210,7 +216,7 @@ namespace cmdR
             {
                 try
                 {
-                    RegisterRoute(cmd.Command, cmd.Execute, cmd.Description);
+                    RegisterRoute(cmd.Command, cmd.Execute, cmd.Description, overwriteRoutes);
                     count++;
                 }
                 catch (Exception e)

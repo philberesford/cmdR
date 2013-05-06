@@ -12,8 +12,13 @@ namespace cmdR.Plugins.Scripts
 
         public static EmitResult CompileScriptFiles(string scriptPath)
         {
+            if (!Directory.Exists(scriptPath))
+                Directory.CreateDirectory(scriptPath);
+
             if (File.Exists(SCRIPT_DDL_NAME))
+            {
                 File.Delete(SCRIPT_DDL_NAME);
+            }
 
             var files = FindCmdRScriptFiles(scriptPath);
             

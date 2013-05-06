@@ -15,13 +15,15 @@ namespace cmdR.StdModules
 
         public CoreModule(CmdR cmdR)
         {
-            Initalise(cmdR);
+            Initalise(cmdR, false);
         }
 
-        public void Initalise(CmdR cmdR)
+        public void Initalise(CmdR cmdR, bool overwriteRoutes)
         {
-            cmdR.RegisterRoute("help", Help, "List all the currently available commands");
-            cmdR.RegisterRoute("?", Help, "List all the currently available commands");
+            cmdR.RegisterRoute("help", Help, "List all the currently available commands", overwriteRoutes);
+            cmdR.RegisterRoute("?", Help, "List all the currently available commands", overwriteRoutes);
+
+            cmdR.RegisterRoute("reload-plugins", ReloadPlugins, "Forces a reload off all the plugins, all clashing routes will be replaced", overwriteRoutes);
         }
 
 
@@ -53,6 +55,11 @@ namespace cmdR.StdModules
 
                 cmdR.Console.WriteLine("");
             }
+        }
+
+        private void ReloadPlugins(IDictionary<string, string> param, CmdR cmdR)
+        {
+            cmdR.AutoRegisterCommands(true);
         }
     }
 }
