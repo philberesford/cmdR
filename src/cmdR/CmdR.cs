@@ -1,4 +1,6 @@
-﻿using cmdR.Abstract;
+﻿using System.IO;
+using System.Reflection;
+using cmdR.Abstract;
 using cmdR.CommandParsing;
 using cmdR.Exceptions;
 using cmdR.IO;
@@ -6,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using cmdR.Plugins.MEF;
+using cmdR.Plugins.Scripts;
 
 namespace cmdR
 {
@@ -108,7 +112,6 @@ namespace cmdR
                     _console.WriteLine("An exception was thrown while running your command\n  Message: {0}\n  Trace: {1}", e.Message, e.StackTrace);
                 }
 
-                // todo: wrap both of these lines in interfaces so we can abstract away the underlying UI framework, so cmdR can live within a WPF or WinForm app.
                 _console.Write(_state.CmdPrompt);
                 command = _console.ReadLine();
             }
@@ -118,27 +121,105 @@ namespace cmdR
 
         public void AutoRegisterCommands()
         {
-            RegisterCommandModules();
+            LoadMefPlugins();
+ 
+            RegisterModules();
+            RegisterCommands();
 
-            var commands = FindAllTypesImplementingICmdRCommand();
-            RegisterSingleCommands(commands);
+            ComplieAndLoadScripts();
         }
 
-        private void RegisterCommandModules()
+        private void ComplieAndLoadScripts()
         {
+            Console.WriteLine("Loading and Compiling CSX Scripts");
+
+            var compileResult = RoslynScriptFactory.CompileScriptFiles(@".\Plugins\Scripts\");
+            if (compileResult.Success)
+            {
+                var moduleType = typeof(ICmdRModule);
+                var commandType = typeof(ICmdRCommand);
+
+                var assembly = Assembly.LoadFrom(RoslynScriptFactory.SCRIPT_DDL_NAME);
+                var modules = assembly.GetTypes()
+                                      .Where(t => moduleType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                                      .Select(m => (ICmdRModule)Activator.CreateInstance(m));
+
+                var commands = assembly.GetTypes()
+                                       .Where(t => commandType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                                       .Select(m => (ICmdRCommand)Activator.CreateInstance(m));
+
+                RegisterModules(modules);
+                RegisterCommands(commands);
+            }
+            else Console.WriteLine("Unable to compile the scripts into a dll\n", string.Join("\n", compileResult.Diagnostics.Select(x => x.Info.GetMessage())));
+        }
+
+        private void LoadMefPlugins()
+        {
+            Console.WriteLine("Loading MEF plugins \\plugins\\mef");
+            
+            var mefFactory = new MefFactory();
+            var pluginCount = mefFactory.LoadPlugins();
+        }
+
+        private void RegisterModules()
+        {
+            _console.WriteLine("Initalising Modules");
+
             var type = typeof(ICmdRModule);
-            AppDomain.CurrentDomain.GetAssemblies()
+            var modules = AppDomain.CurrentDomain.GetAssemblies()
                                    .ToList()
                                    .SelectMany(s => s.GetTypes())
                                    .Where(p => type.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract)
-                                   .Select(c => Activator.CreateInstance(c, this))
-                                   .ToArray();
+                                   .Select(c => (ICmdRModule) Activator.CreateInstance(c));
+
+            RegisterModules(modules);
         }
 
-        private void RegisterSingleCommands(IEnumerable<ICmdRCommand> commands)
+        private void RegisterModules(IEnumerable<ICmdRModule> modules)
         {
-            foreach(var cmd in commands)
-                RegisterRoute(cmd.Command, cmd.Execute, cmd.Description);
+            var count = 0;
+            foreach (var module in modules)
+            {
+                try
+                {
+                    module.Initalise(this);
+                    count++;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error loading MODULE: {0}\nException: {1}", module.GetType().FullName, e.Message);
+                }
+            }
+
+            Console.WriteLine("{0} modules loaded", count);
+        }
+
+
+        private void RegisterCommands()
+        {
+            RegisterCommands(FindAllTypesImplementingICmdRCommand());
+        }
+
+        private void RegisterCommands(IEnumerable<ICmdRCommand> commands)
+        {
+            _console.WriteLine("Registering Commands");
+
+            var count = 0;
+            foreach (var cmd in commands)
+            {
+                try
+                {
+                    RegisterRoute(cmd.Command, cmd.Execute, cmd.Description);
+                    count++;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error loading COMMAND: {0}\nException: {1}", cmd.GetType().FullName, e.Message);
+                }
+            }
+
+            Console.WriteLine("{0} commands loaded", count);
         }
 
         private IEnumerable<ICmdRCommand> FindAllTypesImplementingICmdRCommand()

@@ -9,11 +9,21 @@ namespace cmdR.StdModules
 {
     public class CoreModule : ICmdRModule
     {
+        public CoreModule()
+        {
+        }
+
         public CoreModule(CmdR cmdR)
+        {
+            Initalise(cmdR);
+        }
+
+        public void Initalise(CmdR cmdR)
         {
             cmdR.RegisterRoute("help", Help, "List all the currently available commands");
             cmdR.RegisterRoute("?", Help, "List all the currently available commands");
         }
+
 
         private void Help(IDictionary<string, string> parameters, CmdR cmdR)
         {

@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7457775B-9B2A-4DB7-873A-0DC9001B7A3D}</ProjectGuid>
+    <ProjectGuid>{C857AA52-1161-4A31-A4D3-1FD66100F21E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cmdR</RootNamespace>
-    <AssemblyName>cmdR</AssemblyName>
+    <RootNamespace>TestPlugins</RootNamespace>
+    <AssemblyName>TestPlugins</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,56 +28,23 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Roslyn.Compilers">
-      <HintPath>..\packages\Roslyn.Compilers.Common.1.2.20906.2\lib\net45\Roslyn.Compilers.dll</HintPath>
-    </Reference>
-    <Reference Include="Roslyn.Compilers.CSharp">
-      <HintPath>..\packages\Roslyn.Compilers.CSharp.1.2.20906.2\lib\net45\Roslyn.Compilers.CSharp.dll</HintPath>
+    <Reference Include="cmdR">
+      <HintPath>..\..\..\..\cmdR\bin\Debug\cmdR.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstract\IParseCommands.cs" />
-    <Compile Include="Abstract\IRouteCommands.cs" />
-    <Compile Include="CmdR.cs" />
-    <Compile Include="CmdRState.cs" />
-    <Compile Include="CommandParsing\CommandParserBase.cs" />
-    <Compile Include="Exceptions\NoRoutesSetupException.cs" />
-    <Compile Include="Exceptions\NoRouteFoundException.cs" />
-    <Compile Include="Exceptions\ToManyRoutesFoundException.cs" />
-    <Compile Include="Exceptions\InvalidRouteException.cs" />
-    <Compile Include="Exceptions\InvalidCommandException.cs" />
-    <Compile Include="Abstract\IRoute.cs" />
-    <Compile Include="Abstract\IParseRoutes.cs" />
-    <Compile Include="CommandParsing\KeyValueCommandParser.cs" />
-    <Compile Include="CommandParsing\OrderedCommandParser.cs" />
-    <Compile Include="Plugins\MEF\MEFFactory.cs" />
-    <Compile Include="ICmdRCommand.cs" />
-    <Compile Include="ICmdRModule.cs" />
-    <Compile Include="ICmdRState.cs" />
-    <Compile Include="IO\CmdRConsole.cs" />
-    <Compile Include="IO\ICmdRConsole.cs" />
-    <Compile Include="ParameterType.cs" />
+    <Compile Include="HelloWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Plugins\Scripts\RoslynScriptFactory.cs" />
-    <Compile Include="Route.cs" />
-    <Compile Include="RouteParser.cs" />
-    <Compile Include="Routing.cs" />
-    <Compile Include="StdModules\CoreModule.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NuGet\cmdR.nuspec" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

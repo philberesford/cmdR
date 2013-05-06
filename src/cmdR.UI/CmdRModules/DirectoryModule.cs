@@ -10,16 +10,27 @@ namespace cmdR.UI.CmdRModules
 {
     public class DirectoryModule : ICmdRModule
     {
-        private readonly CmdR _cmdR;
+        private CmdR _cmdR;
 
+
+        public DirectoryModule()
+        {
+        }
 
         public DirectoryModule(CmdR cmdR)
+        {
+            Initalise(cmdR);
+        }
+
+
+        public void Initalise(CmdR cmdR)
         {
             _cmdR = cmdR;
 
             cmdR.RegisterRoute("ls search?", List, "list all files and directories in the current path with an optional RegEx search pattern");
             cmdR.RegisterRoute("cd path", ChangeDirectory, "sets the currently active path, all subsequent commands will be executed within this path");
         }
+
 
         private void ChangeDirectory(IDictionary<string, string> param, CmdR cmd)
         {
