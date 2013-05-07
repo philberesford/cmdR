@@ -30,6 +30,8 @@ namespace cmdR.UI.CmdRModules
                 }
             }
             else cmdR.Console.WriteLine("{0} doesn't exist", param["file"]);
+
+            cmdR.Console.WriteLine("");
         }
     }
 }

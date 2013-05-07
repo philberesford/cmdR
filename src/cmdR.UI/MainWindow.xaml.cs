@@ -28,32 +28,98 @@ namespace cmdR.UI
         {
             InitializeComponent();
 
+            this.CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, this.OnCloseWindow));
+            this.CommandBindings.Add(new CommandBinding(SystemCommands.MaximizeWindowCommand, this.OnMaximizeWindow, this.OnCanResizeWindow));
+            this.CommandBindings.Add(new CommandBinding(SystemCommands.MinimizeWindowCommand, this.OnMinimizeWindow, this.OnCanMinimizeWindow));
+            this.CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, this.OnRestoreWindow, this.OnCanResizeWindow));
+
+
+
             _model = new MainWindowViewModel(Dispatcher);
             DataContext = _model;
 
-            var timer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 2)};
-            timer.Tick += ((sender, e) =>
-                {
-                    if (_scrollViewer.VerticalOffset == _scrollViewer.ScrollableHeight)
-                        _scrollViewer.ScrollToEnd();
-                });
-            timer.Start();
+            //var timer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 2)};
+            //timer.Tick += ((sender, e) =>
+            //    {
+            //        if (_scrollViewer.VerticalOffset != _scrollViewer.ScrollableHeight)
+                        
+            //    });
+            //timer.Start();
         }
 
         private void OnKeyUpHandler(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return)
+            switch (e.Key)
             {
-                // the binding to the ViewModel only updates when focus is lost. this bit of code forces the binding to be updated
-                object focusObj = FocusManager.GetFocusedElement(this);
-                if (focusObj != null && focusObj is TextBox)
-                {
-                    var binding = (focusObj as TextBox).GetBindingExpression(TextBox.TextProperty);
-                    binding.UpdateSource();
-                }
+                case Key.Return:
+                    HandleReturnKeyPress();
+                    break;
 
-                _model.HandleReturnKeyPressed();
+                case Key.Up:
+                    _model.HandleUpKeyPress();
+                    break;
+
+                case Key.Down:
+                    _model.HandleDownKeyPress();
+                    break;
+
+                case Key.Tab:
+                    _model.HandleTabKeyPress();
+                    break;
             }
+        }
+
+        private void HandleUpKeyPress()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleReturnKeyPress()
+        {
+            // the binding to the ViewModel only updates when focus is lost. this bit of code forces the binding to be updated
+            object focusObj = FocusManager.GetFocusedElement(this);
+            if (focusObj != null && focusObj is TextBox)
+            {
+                var binding = (focusObj as TextBox).GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateSource();
+            }
+
+            if (!string.IsNullOrEmpty(_model.Command))
+            {
+                _model.HandleReturnKeyPressed();
+                _scrollViewer.ScrollToEnd();
+            }
+        }
+
+
+        private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+        }
+
+        private void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+        }
+
+        private void OnCloseWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+
+        private void OnMaximizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+
+        private void OnMinimizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
+        }
+
+        private void OnRestoreWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.RestoreWindow(this);
         }
     }
 }

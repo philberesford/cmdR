@@ -34,12 +34,21 @@ namespace cmdR.UI.CmdRModules
 
         private void ChangeDirectory(IDictionary<string, string> param, CmdR cmd)
         {
-            if (Directory.Exists(param["path"]))
+            if (Directory.Exists(Path.Combine((string)cmd.State.Variables["path"], param["path"])))
+            {
+                var path = new DirectoryInfo(Path.Combine((string)cmd.State.Variables["path"], param["path"]));
+
+                cmd.State.Variables["path"] = path.FullName;
+                cmd.State.CmdPrompt = path.FullName;
+            }
+            else if (Directory.Exists(param["path"]))
             {
                 cmd.State.Variables["path"] = param["path"];
                 cmd.State.CmdPrompt = param["path"];
             }
             else cmd.Console.WriteLine("{0} does not exists", param["path"]);
+
+            cmd.Console.WriteLine("working directory: {0}\n", cmd.State.Variables["path"]);
         }
 
         private void List(IDictionary<string, string> param, CmdR cmd)
@@ -79,6 +88,8 @@ namespace cmdR.UI.CmdRModules
                 foreach (var file in Directory.GetFiles(path))
                     cmd.Console.WriteLine("{0}", file);
             }
+
+            cmd.Console.WriteLine("");
         }
     }
 }
