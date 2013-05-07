@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>CmdR by theouteredge</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/theouteredge/cmdR">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/theouteredge/cmdR/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/theouteredge/cmdR/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>CmdR</h1>
+          <p>A simple routing system for command line applications, allowing you to apply a structured way of taking in multiple commands and associating these command with Actions to do useful stuff</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/theouteredge">theouteredge</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>CmdR</h1>
+
+<p>CmdR is a simple command routing framework for console applications, giving you a simple way of routing commands to an Action which will perform your apps logic. This helps introduce a separation between your apps logic and the code to drive the input-parse-execute loop.</p>
+
+<p>CmdR works as a simple input-parse-execute loop where the user enters a command (input) which cmdR will parse and route (parse) to an Action for execution (execute) once the Action has completed cmdR will wait for the user to enter another command and repeat the process</p>
+
+<h2>CmdR UI</h2>
+
+<p>CmdR now comes with a stand-alone WPF UI which in conjunction with the new plugin functionality allow you to build up your own library of commands by loading them using MEF or Roslyn (c# scripts, which are complied into a dll and loaded at runtime)</p>
+
+<p><a href="http://cmdR.github.io/master/theouteredge">Get the CmdR app</a></p>
+
+<h2>NuGet</h2>
+
+<p>To include the CmdR framework in your own application you can install it using NuGet</p>
+
+<pre><code>Install-Package cmdR
+</code></pre>
+
+<h2>USAGE</h2>
+
+<pre><code>class Program
+{
+    static void Main(string[] args)
+    {
+        // the class which contains all our logic
+        var example = new DOSPromptReplication();
+
+        // creating the CmdR class passing, specifying the command prompt (&gt; ) to use and a list of exit codes (exit) the user can type to exit the cmdR loop
+        // these are the system defaults, so they dont actually need to be passed in
+        var cmdR = new CmdR("c:\&gt; ", new string[] { "exit" });
+
+        // setting up the command routes
+        cmdR.RegisterRoute("cd path", example.ChangeDirectory);
+        cmdR.RegisterRoute("del file", example.DeleteFile);
+
+        // registering a route with an optional parameter, optional params are denoted by the ? at the end
+        cmdR.RegisterRoute("ls filter?", example.ListDirectory);
+
+        // registering a route with a lambda
+        cmdR.RegisterRoute("echo text", (parameters, console, state) =&gt; 
+            { 
+                console.WriteLine(parameters["text"]);
+            }));
+
+        // registering a route with a lambda and cmdR [v1.2.0]
+        cmdR.RegisterRoute("echo2 text", (parameters, cmd) =&gt; 
+            { 
+                cmd.Console.WriteLine(parameters["text"]);
+            }));
+
+
+        // start the cmdR loop passing in the args as the first command to execute
+        cmdR.AutoRegisterCommands();
+        cmdR.Run(args);
+    }
+}
+
+public class DOSPromptReplication
+{
+    private string _directory = @"c:\";
+
+    public void ChangeDirectory(IDictionary&lt;string, string&gt; param, ICmdRConsole console, ICmdRState state)
+    {
+        var path = param["path"];
+
+        if (Directory.Exists(path))
+        {
+            _directory = path;
+        }
+        else if (Directory.Exists(_directory + path))
+        {
+            _directory = _directory + path;
+        }
+        else console.WriteLine("{0} is not a valid directory", path);
+
+        if (_directory.Last() != '\\')
+            _directory = _directory + "\\";
+
+        state.CmdPrompt = string.Format("{0}\n&gt; ", _directory);
+    }
+
+    public void ListDirectory(IDictionary&lt;string, string&gt; param, ICmdRConsole console, ICmdRState state)
+    {
+        foreach(var file in Directory.GetFiles(_directory))
+        {
+            console.WriteLine(Path.GetFileName(file));
+        }
+
+        foreach (var directory in Directory.GetDirectories(_directory))
+        {
+            console.WriteLine(directory);
+        }
+    }
+
+    public void DeleteFile(IDictionary&lt;string, string&gt; param, ICmdRConsole console, ICmdRState state)
+    {
+        var file = param["file"];
+
+        if (File.Exists(file))
+        {
+            File.Delete(file);
+        }
+        else if (File.Exists(_directory + file))
+        {
+            File.Delete(_directory + file);
+        }
+        else console.WriteLine("{0} does not exist", file);
+    }
+}
+</code></pre>
+
+<h3>Example Output</h3>
+
+<pre><code>c:\&gt; echo "hello world!"
+hello world!
+c:\&gt; cd c:\test
+c:\test&gt; ls
+file1.txt
+file2.txt
+file3.txt
+c:\test&gt; del file1.txt
+c:\test&gt; ls
+file2.txt
+file3.txt
+c:\test&gt; exit
+</code></pre>
+
+<h2>USAGE: Modules</h2>
+
+<pre><code>public class DirectoryModule : ICmdRModule
+{
+    public DirectoryModule(CmdR cmdR)
+    {
+        cmdR.RegisterRoute("ls search?", List, "list all files and directories in the current path with an optional RegEx search pattern");
+        cmdR.RegisterRoute("cd path", ChangeDirectory, "sets the currently active path, all subsequent commands will be executed within this path");
+    }
+
+    private void List(IDictionary&lt;string, string&gt; param, CmdR cmd)
+    {
+        //todo: list directories
+    }
+
+    private void ChangeDirectory(IDictionary&lt;string, string&gt; param, CmdR cmd)
+    {
+        if (Directory.Exists(param["path"]))
+        {
+            cmd.State.Variables["path"] = param["path"];
+            cmd.State.CmdPrompt = string.Format("{0}\ncmdR&gt;", param["path"]);
+        }
+        else cmd.Console.WriteLine("{0} does not exists", param["path"]);
+    }
+}
+</code></pre>
+
+<h2>USAGE: Single Command Class</h2>
+
+<pre><code>public class ChangeDirectoryCommand : ICmdRCommand
+{
+    public string Command { get { return "cd path"; } }
+    public string Description { get { return "sets the currently active path, all subsequent commands will be executed within this path"; } }
+
+    public void Execute(IDictionary&lt;string, string&gt; param, CmdR cmd)
+    {
+        if (Directory.Exists(param["path"]))
+        {
+            cmd.State.Variables["path"] = param["path"];
+            cmd.State.CmdPrompt = string.Format("{0}\ncmdR&gt;", param["path"]);;
+        }
+        else cmd.Console.WriteLine("{0} does not exists", param["path"]);
+    }
+}
+</code></pre>
+
+<h2>VERSION HISTORY</h2>
+
+<h3>1.3.0</h3>
+
+<p>Changed the ICmdRConsle so the Write and WriteLine methods are <strong>params object[] paramters</strong> instead of <strong>params string[] paramters</strong> no more .ToString() needed</p>
+
+<p>Changed the ICmdRState so it has a <strong>IDictionary Variables { get; set; }</strong> this allows you to store variables and share them with other commands</p>
+
+<p>Introduced two new Interfaces which allow you to easily register commands automatically, <strong>ICmdRModule</strong> and <strong>ICmdRCommand</strong></p>
+
+<p><strong>ICmdRModule</strong> allow you to register a single class which implements lots of commands. 
+The CmdR class will be passed into the classes constructor allowing you to register your routes there.</p>
+
+<p><strong>ICmdRCommand</strong> allows you to register a single class which implements a single command.
+This interface specifies a small interface which will be used by CmdR to automatically register your route.</p>
+
+<p>Simply implement these interfaces and register them with CmdR by calling cmdR.AutoRegisterCommands()</p>
+
+<h3>1.2.0</h3>
+
+<p>Added an additional RegisterRoute which takes in the CmdR class itself. This reduces the amount of params you need to specify while giveing you the same functinality.</p>
+
+<pre><code>Action&lt;IDictionary&lt;string, ParameterType&gt;, ICmdR&gt;
+</code></pre>
+
+<p>Cleaned up the help command so its not so damned ugly... still a little ugly
+Cleaned the nuget spec aftr finding the -version switch, we don't need multiple nuspec's anymore</p>
+
+<h3>1.1.0</h3>
+
+<p>Two additonal parameters, ICmdRConsole and ICmdRState, have been added to the routes actions, so the action signitures have changed to:</p>
+
+<pre><code>Action&lt;IDictionary&lt;string, ParameterType&gt;, ICmdRConsole, ICmdRState&gt;
+</code></pre>
+
+<p><strong>ICmdRConsole</strong> abstracts away the reliance on the built in Console class, so we can implement versions for other frameworks in the future, you should use this if you want  to output anything to the screen.</p>
+
+<p><strong>ICmdRState</strong> gives you access to CmdR's internal state, allowing you to modify exit codes, the CmdPrompt and see the current collection of Registered Routes. This was mainly implemented to give you access to the CmdR CmdPrompt setting so you can modify it while the application is running to give feedback to the user. i.e. to show the current path or which database we are currently connected to.</p>
+
+<h2>LICENCE</h2>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
