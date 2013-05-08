@@ -51,7 +51,7 @@ namespace cmdR
 
         public IRoute FindRoute(string commandName, IDictionary<string, string> parameters)
         {
-            var paramName = parameters.Select(x => x.Key).ToList();
+            var paramName = parameters.Where(x => !x.Key.StartsWith("/")).Select(x => x.Key).ToList();
             var routes = _routes.Where(x => x.Name == commandName && x.Match(paramName)).ToList();
 
             if (routes.Count == 0)
