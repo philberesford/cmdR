@@ -68,13 +68,13 @@ namespace cmdR.UI.CmdRModules
 
                 foreach (var dir in Directory.GetDirectories(path).Where(dir => regex.IsMatch(dir)))
                 {
-                    cmd.Console.WriteLine("{0}\n", dir);
+                    cmd.Console.WriteLine("{0}", dir);
                     matches++;
                 }
 
                 foreach (var file in Directory.GetFiles(path).Where(file => regex.IsMatch(file)))
                 {
-                    cmd.Console.WriteLine("{0}\n", file);
+                    cmd.Console.WriteLine("{0}", file);
                     matches++;
                 }
 

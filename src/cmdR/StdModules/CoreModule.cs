@@ -20,8 +20,8 @@ namespace cmdR.StdModules
 
         public void Initalise(CmdR cmdR, bool overwriteRoutes)
         {
-            cmdR.RegisterRoute("help", Help, "List all the currently available commands", overwriteRoutes);
-            cmdR.RegisterRoute("?", Help, "List all the currently available commands", overwriteRoutes);
+            cmdR.RegisterRoute("help command?", Help, "List all the currently available commands", overwriteRoutes);
+            cmdR.RegisterRoute("? command?", Help, "List all the currently available commands", overwriteRoutes);
 
             cmdR.RegisterRoute("reload-plugins", ReloadPlugins, "Forces a reload off all the plugins, all clashing routes will be replaced", overwriteRoutes);
         }
@@ -29,11 +29,11 @@ namespace cmdR.StdModules
 
         private void Help(IDictionary<string, string> parameters, CmdR cmdR)
         {
-            if (parameters.ContainsKey("route"))
+            if (parameters.ContainsKey("command"))
             {
-                if (cmdR.State.Routes.Any(x => x.Name.StartsWith(parameters["route"])))
+                if (cmdR.State.Routes.Any(x => x.Name.StartsWith(parameters["command"])))
                 {
-                    var route = cmdR.State.Routes.Single(x => x.Name == parameters["route"]);
+                    var route = cmdR.State.Routes.Single(x => x.Name == parameters["command"]);
 
                     cmdR.Console.Write("  {0}", route.Name);
 
@@ -44,7 +44,7 @@ namespace cmdR.StdModules
                     if (!string.IsNullOrEmpty(route.Description))
                         cmdR.Console.WriteLine("  " + route.Description);
                 }
-                else cmdR.Console.WriteLine("  unknown command name [{0}]", parameters["route"]);
+                else cmdR.Console.WriteLine("  unknown command name [{0}]", parameters["command"]);
             }
             else
             {

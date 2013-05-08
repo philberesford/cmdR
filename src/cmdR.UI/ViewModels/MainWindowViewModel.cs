@@ -36,7 +36,7 @@ namespace cmdR.UI.ViewModels
             InvokeOnBackgroundThread(() => {
                     _cmdR.Console.WriteLine("Discovering commands, please wait...");
                     _cmdR.AutoRegisterCommands();
-                    _cmdR.Console.WriteLine("\n{0} routes registered found\n", _cmdR.State.Routes.Count);
+                    _cmdR.Console.WriteLine("\n{0} routes registered\n", _cmdR.State.Routes.Count);
                     
                     NotifyPropertyChanged("Output");
                     NotifyPropertyChanged("Prompt");

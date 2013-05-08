@@ -14,17 +14,20 @@
         
         <Rectangle Fill="#FF242424" Grid.Row="0" />
         <ScrollViewer Name="_scrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Segoe UI Mono"
-                       Foreground="DarkOrange" Text="{Binding Output}" Name="_output" />
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Segoe UI Mono"
+                     Foreground="DarkOrange" Text="{Binding Output}" Name="_output"  IsReadOnly="True" IsReadOnlyCaretVisible="False"
+                     Background="Transparent" BorderThickness="0" />
         </ScrollViewer>
 
+        
         <Rectangle Fill="#FF121212" Grid.Row="1" />
         <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Segoe UI Mono"
-                       Foreground="DarkOrange" Text="{Binding Prompt}" Grid.Row="1" />
+                   Foreground="DarkOrange" Text="{Binding Prompt}" Grid.Row="1" />
 
+        
         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Grid.Row="2" FontFamily="Segoe UI Mono" 
                  Background="#ff000000" Foreground="DarkOrange" KeyUp="OnKeyUpHandler" BorderBrush="#ff000000"
-                 Text="{Binding Command, Mode=TwoWay}" />
+                 Text="{Binding Command, Mode=TwoWay}"  BorderThickness="0" />
 
     </Grid>
 </Window>
