@@ -73,6 +73,7 @@
     <Compile Include="ViewModels\IWpfViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\WpfConsole.cs" />
     <Page Include="BaseWindowTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

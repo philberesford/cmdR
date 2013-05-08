@@ -6,25 +6,32 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using cmdR.CommandParsing;
-using cmdR.IO;
 
 namespace cmdR.UI.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, IWpfViewModel
     {
-        private CmdR _cmdR;
+        private readonly CmdR _cmdR;
 
         public string Command { get; set; }
         public string Output { get; set; }
         public string Prompt { get { return _cmdR.State.CmdPrompt; } set { } }
 
+
+        public IList<string> CommandHistory { get; set; }
+        public int? CommandHistoryPointer { get; set; }
+
+
         public MainWindowViewModel(Dispatcher dispatcher) : base(dispatcher)
         {
-            _cmdR = new CmdR(console: new WPFConsole(this));
+            _cmdR = new CmdR(console: new WpfConsole(this));
 
             _cmdR.State.CmdPrompt = GetUserDirectory();
             _cmdR.State.Variables.Add("path", GetUserDirectory());
             _cmdR.Console.WriteLine("Welcome to CmdR :D");
+
+            CommandHistory = new List<string>();
+            CommandHistoryPointer = null;
             
             InvokeOnBackgroundThread(() => {
                     _cmdR.Console.WriteLine("Discovering commands, please wait...");
@@ -50,6 +57,8 @@ namespace cmdR.UI.ViewModels
                 {
                     try
                     {
+                        CommandHistory.Add(Command);
+
                         _cmdR.ExecuteCommand(Command);
                         
                         Command = string.Empty;
@@ -68,52 +77,51 @@ namespace cmdR.UI.ViewModels
 
         public void HandleUpKeyPress()
         {
-            
+            // check to see if we have any history to cycle through before we do anything
+            if (CommandHistory.Count() == 0)
+                return;
+
+            // if we haven't cycled yet and we are pressing Up we probably want to start at the begining
+            if (CommandHistoryPointer == null)
+                CommandHistoryPointer = 0;
+            else
+                CommandHistoryPointer += 1;
+
+            if (CommandHistoryPointer >= CommandHistory.Count())
+                CommandHistoryPointer = 0;
+
+            if (CommandHistoryPointer < CommandHistory.Count())
+            {
+                Command = CommandHistory[CommandHistoryPointer.Value];
+                NotifyPropertyChanged("Command");
+            }
         }
 
         public void HandleDownKeyPress()
         {
-            
+            // check to see if we have any history to cycle through before we do anything
+            if (CommandHistory.Count() == 0)
+                return;
+
+            // if we haven't cycled yet and we are pressing Down we probably want to see the last command
+            if (CommandHistoryPointer == null)
+                CommandHistoryPointer = CommandHistory.Count() -2;
+            else
+                CommandHistoryPointer -= 1;
+
+            if (CommandHistoryPointer < 0)
+                CommandHistoryPointer = CommandHistory.Count() - 1;
+
+            if (CommandHistoryPointer < CommandHistory.Count())
+            {
+                Command = CommandHistory[CommandHistoryPointer.Value];
+                NotifyPropertyChanged("Command");
+            }
         }
 
         public void HandleTabKeyPress()
         {
-            
-        }
-    }
-
-    public class WPFConsole : ICmdRConsole
-    {
-        private readonly IWpfViewModel _viewmodel;
-
-        public WPFConsole(IWpfViewModel viewModel)
-        {
-            _viewmodel = viewModel;
-        }
-
-        public string ReadLine()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Write(string line, params object[] param)
-        {
-            _viewmodel.Output = string.Format("{0}{1}", _viewmodel.Output, string.Format(line, param));
-        }
-
-        public void Write(string line)
-        {
-            _viewmodel.Output = string.Format("{0}{1}", _viewmodel.Output, line);
-        }
-
-        public void WriteLine(string line, params object[] param)
-        {
-            _viewmodel.Output = string.Format("{0}\n{1}", _viewmodel.Output, string.Format(line, param));
-        }
-
-        public void WriteLine(string line)
-        {
-            _viewmodel.Output = string.Format("{0}\n{1}", _viewmodel.Output, line);
+            // todo: show a dropdown or autocomplete the current bit of text being types into the command prompt
         }
     }
 }

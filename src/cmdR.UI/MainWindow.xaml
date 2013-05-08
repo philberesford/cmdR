@@ -20,7 +20,7 @@
 
         <Rectangle Fill="#FF242424" Grid.Row="1" />
         <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Segoe UI Mono"
-                       Foreground="DarkOrange" Text="{Binding Prompt}" />
+                       Foreground="DarkOrange" Text="{Binding Prompt}" Grid.Row="1" />
 
         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Grid.Row="2" FontFamily="Segoe UI Mono" 
                  Background="#ff000000" Foreground="DarkOrange" KeyUp="OnKeyUpHandler" BorderBrush="#ff000000"
