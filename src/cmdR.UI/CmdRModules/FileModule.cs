@@ -22,29 +22,26 @@ namespace cmdR.UI.CmdRModules
             var count = 0;
             var errors = 0;
 
-            foreach (var file in Directory.GetFiles((string)cmdR.State.Variables["path"]))
+            foreach (var file in Directory.GetFiles((string)cmdR.State.Variables["path"]).Where(file => match.IsMatch(file)))
             {
-                if (match.IsMatch(file))
+                if (param.ContainsKey("/test"))
                 {
-                    if (param.ContainsKey("/test"))
+                    count++;
+                    cmdR.Console.WriteLine(" {0} to {1}", file, match.Replace(file, param["replace"]));
+                }
+                else
+                {
+                    try
                     {
-                        count++;
-                        cmdR.Console.WriteLine(" {0} to {1}", file, match.Replace(file, param["replace"]));
-                    }
-                    else
-                    {
-                        try
-                        {
-                            File.Move(file, match.Replace(file, param["replace"]));
-                            Console.WriteLine("{0}", match.Replace(file, param["replace"]));
+                        File.Move(file, match.Replace(file, param["replace"]));
+                        Console.WriteLine("{0}", match.Replace(file, param["replace"]));
 
-                            count++;
-                        }
-                        catch (Exception e)
-                        {
-                            cmdR.Console.WriteLine("An exception occurred while renaming {0}", file);
-                            errors++;
-                        }
+                        count++;
+                    }
+                    catch (Exception e)
+                    {
+                        cmdR.Console.WriteLine("An exception occurred while renaming {0}", file);
+                        errors++;
                     }
                 }
             }
