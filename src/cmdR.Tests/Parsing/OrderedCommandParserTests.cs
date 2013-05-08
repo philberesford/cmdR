@@ -308,5 +308,36 @@ namespace cmdR.Tests.Parsing
             // Act
             var param = parser.Parse("ls c:\\ProgramFiles \"*.csv", out commandName);
         }
+
+        [Test]
+        public void Parse_CanParseSwitcheFromCommand()
+        {
+            var parser = new OrderedCommandParser();
+            parser.SetRoutes(_twoParamRoute);
+
+            var commandName = "";
+
+            // Act
+            var param = parser.Parse("ls c:\\ProgramFiles \\*.csv /switch", out commandName);
+
+            // Assert
+            Assert.IsTrue(param.ContainsKey("/switch"));
+        }
+
+        [Test]
+        public void Parse_CanParseMultipleSwitcheFromCommand()
+        {
+            var parser = new OrderedCommandParser();
+            parser.SetRoutes(_twoParamRoute);
+
+            var commandName = "";
+
+            // Act
+            var param = parser.Parse("ls c:\\ProgramFiles \\*.csv /switch1 /switch2", out commandName);
+
+            // Assert
+            Assert.IsTrue(param.ContainsKey("/switch1"));
+            Assert.IsTrue(param.ContainsKey("/switch2"));
+        }
     }
 }

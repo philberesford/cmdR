@@ -18,7 +18,7 @@
                        Foreground="DarkOrange" Text="{Binding Output}" Name="_output" />
         </ScrollViewer>
 
-        <Rectangle Fill="#FF242424" Grid.Row="1" />
+        <Rectangle Fill="#FF121212" Grid.Row="1" />
         <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Segoe UI Mono"
                        Foreground="DarkOrange" Text="{Binding Prompt}" Grid.Row="1" />
 

@@ -1,4 +1,5 @@
-﻿using cmdR.Exceptions;
+﻿using System.Text.RegularExpressions;
+using cmdR.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,17 @@ namespace cmdR.CommandParsing
 {
     public class CommandParserBase
     {
+        protected string ParseSwitces(string command, Dictionary<string, string> result)
+        {
+            var switchRegex = new Regex("/[a-zA-Z0-9]{1,}");
+            var matches = switchRegex.Matches(command);
+
+            foreach (var match in matches)
+                result.Add(match.ToString(), "");
+
+            return switchRegex.Replace(command, "");
+        }
+
         protected string GetEscappedToken(string command, char terminator, char group, string escape, int position, out int nextposition)
         {
             var token = "";

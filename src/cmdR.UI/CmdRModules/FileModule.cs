@@ -12,6 +12,7 @@ namespace cmdR.UI.CmdRModules
         public void Initalise(CmdR cmdR, bool overwriteRoutes)
         {
             cmdR.RegisterRoute("preview file rows?", Preview, "", overwriteRoutes);
+            cmdR.RegisterRoute("rn match replace test?", Preview, "", overwriteRoutes);
         }
 
         private void Preview(IDictionary<string, string> param, CmdR cmdR)

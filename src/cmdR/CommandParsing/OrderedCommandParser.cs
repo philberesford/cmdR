@@ -1,4 +1,5 @@
-﻿using cmdR.Abstract;
+﻿using System.Text.RegularExpressions;
+using cmdR.Abstract;
 using cmdR.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ namespace cmdR.CommandParsing
             var position = 0;
             var nextposition = 0;
 
+            command = command.Trim();
+            command = ParseSwitces(command, result);
             command = command.Trim();
 
             var cmdName = GetUnescappedToken(command, ' ', position, out nextposition);
@@ -67,6 +70,8 @@ namespace cmdR.CommandParsing
 
             throw new InvalidCommandException("The command is invalid, we could not bind the parameters to any route which have been setup");
         }
+
+        
 
         public bool HasRoutes()
         {
