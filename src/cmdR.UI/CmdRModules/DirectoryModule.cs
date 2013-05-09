@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace cmdR.UI.CmdRModules
 {
-    public class DirectoryModule : ICmdRModule
+    public class DirectoryModule : DirectoryModuleBase, ICmdRModule
     {
         private CmdR _cmdR;
 
@@ -34,19 +34,15 @@ namespace cmdR.UI.CmdRModules
 
         private void ChangeDirectory(IDictionary<string, string> param, CmdR cmd)
         {
-            if (Directory.Exists(Path.Combine((string)cmd.State.Variables["path"], param["path"])))
+            var path = GetPath(param["path"], cmd.State.Variables);
+            if (path == null)
             {
-                var path = new DirectoryInfo(Path.Combine((string)cmd.State.Variables["path"], param["path"]));
+                cmd.Console.WriteLine("{0} does not exist", param["path"]);
+                return;
+            }
 
-                cmd.State.Variables["path"] = path.FullName;
-                cmd.State.CmdPrompt = path.FullName;
-            }
-            else if (Directory.Exists(param["path"]))
-            {
-                cmd.State.Variables["path"] = param["path"];
-                cmd.State.CmdPrompt = param["path"];
-            }
-            else cmd.Console.WriteLine("{0} does not exists", param["path"]);
+            cmd.State.Variables["path"] = path;
+            cmd.State.CmdPrompt = path;
 
             cmd.Console.WriteLine("working directory: {0}\n", cmd.State.Variables["path"]);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,37 @@ using System.Threading.Tasks;
 
 namespace cmdR.UI.CmdRModules
 {
-    public class FileModule : ICmdRModule
+    public class FileModule : DirectoryModuleBase, ICmdRModule
     {
         public void Initalise(CmdR cmdR, bool overwriteRoutes)
         {
-            cmdR.RegisterRoute("preview file rows?", Preview, "", overwriteRoutes);
+            cmdR.RegisterRoute("preview file rows?", Preview, "Previews the first 10 lines of a file, or you can specify the number of rows to read", overwriteRoutes);
             cmdR.RegisterRoute("rn match replace", Rename, "Renames a file using a regex match and replace, if you want to run a test first use the switch /test", overwriteRoutes);
+            cmdR.RegisterRoute("handles path?", Handles, "Lists the Open Handles on a directory", overwriteRoutes);
         }
+
+        private void Handles(IDictionary<string, string> param, CmdR cmdR)
+        {
+            var path = param.ContainsKey("path") ? GetPath(param["path"], cmdR.State.Variables) : (string)cmdR.State.Variables["path"];
+
+            if (!Directory.Exists(path))
+            {
+                cmdR.Console.WriteLine("{0} doesnt exist", path ?? param["path"]);
+                return;
+            }
+
+            cmdR.Console.WriteLine("looking for process with files handles open within {0}", path);
+
+            var count = 0;
+            foreach (var process in Win32Processes.GetProcessesLockingFile(path))
+            {
+                cmdR.Console.WriteLine(" {0}", process.ProcessName);
+                count++;
+            }
+
+            cmdR.Console.WriteLine("{0} process with files handles open within {1}\n", count, path);
+        }
+
 
         private void Rename(IDictionary<string, string> param, CmdR cmdR)
         {

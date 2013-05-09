@@ -85,11 +85,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CmdRModules\DirectoryModule.cs" />
+    <Compile Include="CmdRModules\DirectoryModuleBase.cs" />
     <Compile Include="CmdRModules\FileModule.cs" />
     <Compile Include="ViewModels\IWpfViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WpfConsole.cs" />
+    <Compile Include="Win32Processes.cs" />
     <Page Include="BaseWindowTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
