@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="cmdR.UI.exe" version="0.1.0.6" publicKeyToken="ff46178f80607192" language="neutral" processorArchitecture="msil" type="win32" />
+  <description asmv2:publisher="theouteredge" asmv2:product="CmdR UI" asmv2:supportUrl="http://theouteredge.github.io/cmdR/" co.v1:errorReportUrl="http://theouteredge.github.io/cmdR/" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="cmdR.UI" version="0.1.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="cmdR.UI.exe" parameters="" />
+  </entryPoint>
+  <co.v1:useManifestForTrust xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!-- UAC Manifest Options
+            If you want to change the Windows User Account Control level replace the 
+            requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+            Specifying requestedExecutionLevel node will disable file and registry virtualization.
+            If you want to utilize File and Registry Virtualization for backward 
+            compatibility then delete the requestedExecutionLevel node.
+        -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="cmdR.dll" size="28160">
+      <assemblyIdentity name="cmdR" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>JwVswOWGiAzIqyNiutk0l+p7ETr0hw6X+4hn7MoyRfo=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="cmdR.UI.exe" size="30208">
+      <assemblyIdentity name="cmdR.UI" version="0.1.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>uRsxKSseSokAw5PBDr4e3Hwdzds+btL+P0hDAacdPJA=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Roslyn.Compilers.dll" size="1113736">
+      <assemblyIdentity name="Roslyn.Compilers" version="1.2.0.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>UiCeiAqp3LOTCpUkw+Bpj5YGjAgnugyzWpVCf5t7NYg=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Roslyn.Compilers.CSharp.dll" size="2931352">
+      <assemblyIdentity name="Roslyn.Compilers.CSharp" version="1.2.0.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>YxBzQ3FPvdmzxP+HolaZ7rGQSxHHD40MhapQVUeq2cM=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="cmdR.UI.exe.config" size="187">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>xm4bo26HQ0LNVwz1vdPYtzhkpMnp2AI5i+f0b+OahTI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- A list of all Windows versions that this application is designed to work with. 
+      Windows will automatically select the most compatible environment.-->
+      <!-- If your application is designed to work with Windows Vista, uncomment the following supportedOS node-->
+      <!--<supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}"></supportedOS>-->
+      <!-- If your application is designed to work with Windows 7, uncomment the following supportedOS node-->
+      <!--<supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/>-->
+      <!-- If your application is designed to work with Windows 8, uncomment the following supportedOS node-->
+      <!--<supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}"></supportedOS>-->
+    </application>
+  </compatibility>
+<publisherIdentity name="CN=STELLA\andrew.long" issuerKeyHash="4cd7afe75b18251062732224fc1babc784f9dc09" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>oI9eo+OmNh27L8YFV/sDriLdqxfm/mgukjY6M0p8oWg=</DigestValue></Reference></SignedInfo><SignatureValue>IleT96V/5tWObWvGk+tVnyqZhVhNBhNqmb+8QzPAS/hKThE+Rhmt+PIJi85+gZPokqxKqnBRbCAjCp+LwzNIqEIQJ00fpKsUl6iNYI2sFFQT8bjVEKTAcHHCbAH0Tu56yc0AtbVbVTkc0HdIZQXzBzL2cJ9A/CgWObtPLQdnvAY=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>u7YsKVITI4IAgwYIYQ7ycAT6UgMAAgaGgIJVpt+ojpTN9CfdBUgsjaMeg2xpfPZ8BYgnKZZ1WA9otdDT56teVi5otWH0cgzbD9u92IxyC4Y3NqXV0aBVhhIvXNgFlKfOBR9S7PrWjMpJ9nu4DFXVWuaqk1Whfi8K1ypnDGxXc28=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="68a17c4a333a36922e68fee617abdd22ae03fb5705c62fbb1d36a6e3a35e8fa0" Description="" Url=""><as:assemblyIdentity name="cmdR.UI.exe" version="0.1.0.6" publicKeyToken="ff46178f80607192" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=STELLA\andrew.long</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>mVk66iGZqRfWSeu6KiC13BDDe3ah1XxH9bYe5vj5iHo=</DigestValue></Reference></SignedInfo><SignatureValue>GXYMXeVW4RpYhRfRpe1JT6XhrMbmzuBRqTf0B4rFvn7QkJXkNdU46ePTIVrGFH9ykIqOuzTWu5YFkzsdAuLiPdjoa6wTqoNgEr4UwNnR+qE8nJroOFv/rPZt14RBnq7/xLoYJrCVjj6Vnms8kgkX55bDm/P155Y/zukSXQ1QcmY=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>u7YsKVITI4IAgwYIYQ7ycAT6UgMAAgaGgIJVpt+ojpTN9CfdBUgsjaMeg2xpfPZ8BYgnKZZ1WA9otdDT56teVi5otWH0cgzbD9u92IxyC4Y3NqXV0aBVhhIvXNgFlKfOBR9S7PrWjMpJ9nu4DFXVWuaqk1Whfi8K1ypnDGxXc28=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB4TCCAUqgAwIBAgIQFmyOrkvqXYVCGClkQGimWTANBgkqhkiG9w0BAQsFADAvMS0wKwYDVQQDHiQAUwBUAEUATABMAEEAXABhAG4AZAByAGUAdwAuAGwAbwBuAGcwHhcNMTMwNTA5MTM1NDAwWhcNMTQwNTA5MTk1NDAwWjAvMS0wKwYDVQQDHiQAUwBUAEUATABMAEEAXABhAG4AZAByAGUAdwAuAGwAbwBuAGcwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALu2LClSEyOCAIMGCGEO8nAE+lIDAAIGhoCCVabfqI6UzfQn3QVILI2jHoNsaXz2fAWIJymWdVgPaLXQ0+erXlYuaLVh9HIM2w/bvdiMcguGNzal1dGgVYYSL1zYBZSnzgUfUuz61ozKSfZ7uAxV1VrmqpNVoX4vCtcqZwxsV3NvAgMBAAEwDQYJKoZIhvcNAQELBQADgYEAhn4YBxQsSEgkp89zpTkgFdLVhkvalYdsDkBIdC9w3S1GcvbU2g5jeQS44X0eX951Bb3U/jcfLXnPi3QqXV/gyo9AAML82Fzscr52hWsoNOSqq/6V12b/ZbrnZmSg51FpTFHKEffkqt9ceat5x+QLZ4timODqMgIx0KOk3OqSbes=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
