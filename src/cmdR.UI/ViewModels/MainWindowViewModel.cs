@@ -75,7 +75,7 @@ namespace cmdR.UI.ViewModels
                     catch (Exception e)
                     {
                         _cmdR.Console.WriteLine("An exception was thrown while running your command");
-                        _cmdR.Console.WriteLine("  {0}", e.Message);
+                        _cmdR.Console.WriteLine(" {0}\n", e.Message);
                     }
 
                     NotifyPropertyChanged("Output");
