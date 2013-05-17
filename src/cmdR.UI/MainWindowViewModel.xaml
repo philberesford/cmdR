@@ -1,0 +1,50 @@
+﻿
+ <!-- 
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:local="clr-namespace:cmdR.UI">
+
+</ResourceDictionary>
+-->  
+<viewModels:MainWindowViewModel
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModels="clr-namespace:cmdR.UI.ViewModels">
+
+    <viewModels:MainWindowViewModel.Command>rn (?[path].{1,})(?[ext]\.txt)$ ${path}.text</viewModels:MainWindowViewModel.Command>
+    <viewModels:MainWindowViewModel.Prompt>c:\Users\andy\skydrive</viewModels:MainWindowViewModel.Prompt>
+    <viewModels:MainWindowViewModel.Output>
+        <![CDATA[
+        <Section xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+            <Paragraph>
+                <Run>Welcome to CmdR :D</Run>
+                <Run>Discovering commands, please wait...</Run>
+                <Run>Loading MEF plugins \plugins\MEF</Run>
+                <Run>Initalising Modules</Run>
+                <Run>3 modules loaded</Run>
+                <Run>Registering Commands</Run>
+                <Run>0 commands loaded</Run>
+                <Run>Loading and Compiling CSX Scripts</Run>
+                <Run>0 modules loaded</Run>
+                <Run>Registering Commands</Run>
+                <Run>1 commands loaded</Run>
+
+                <Run>10 routes registered</Run>
+
+                <Run>C:\Users\A.N.Other</Run>
+                <Run>C:\Users\All Users</Run>
+                <Run>C:\Users\Andrew.Long</Run>
+                <Run>C:\Users\chris.pietersen</Run>
+                <Run>C:\Users\Default</Run>
+                <Run>C:\Users\Default User</Run>
+                <Run>C:\Users\Public</Run>
+                <Run>C:\Users\tsgadmin</Run>
+                <Run>C:\Users\tsgsupport</Run>
+                <Run>C:\Users\DatabaseGroup.Common.1.11.27645.nupkg</Run>
+                <Run>C:\Users\desktop.ini</Run>
+            </Paragraph>
+        </Section>
+        ]]>
+    </viewModels:MainWindowViewModel.Output>
+
+</viewModels:MainWindowViewModel>

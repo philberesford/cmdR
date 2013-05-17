@@ -1,7 +1,14 @@
 ﻿<Window x:Class="cmdR.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="CmdR" Height="350" Width="780"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        Title="CmdR" 
+        Height="450" 
+        Width="780"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignData Source=MainWindowViewModel.xaml}"
         Style="{StaticResource MetroStyle}">
     
     <Grid>
@@ -14,20 +21,25 @@
         
         <Rectangle Fill="#FF242424" Grid.Row="0" />
         <ScrollViewer Name="_scrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Segoe UI Mono"
-                     Foreground="DarkOrange" Text="{Binding Output}" Name="_output"  IsReadOnly="True" IsReadOnlyCaretVisible="False"
-                     Background="Transparent" BorderThickness="0" />
+            <toolkit:RichTextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" FontFamily="Consolas"
+                         Foreground="DarkOrange" Text="{Binding Output}"  Name="_output"  IsReadOnly="True" IsReadOnlyCaretVisible="False"
+                         Background="Transparent" BorderThickness="0" FontSize="13">
+
+                <toolkit:RichTextBox.TextFormatter>
+                    <toolkit:XamlFormatter />
+                </toolkit:RichTextBox.TextFormatter>
+            </toolkit:RichTextBox>
         </ScrollViewer>
 
         
         <Rectangle Fill="#FF121212" Grid.Row="1" />
-        <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Segoe UI Mono"
-                   Foreground="DarkOrange" Text="{Binding Prompt}" Grid.Row="1" />
+        <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Consolas"
+                   Foreground="DarkOrange" Text="{Binding Prompt}" Grid.Row="1" FontSize="13" />
 
-        
-        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Grid.Row="2" FontFamily="Segoe UI Mono" 
+
+        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Grid.Row="2" FontFamily="Consolas" 
                  Background="#ff000000" Foreground="DarkOrange" KeyUp="OnKeyUpHandler" BorderBrush="#ff000000"
-                 Text="{Binding Command, Mode=TwoWay}"  BorderThickness="0" />
+                 Text="{Binding Command, Mode=TwoWay}"  BorderThickness="0" FontSize="13" />
 
     </Grid>
 </Window>

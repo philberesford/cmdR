@@ -15,13 +15,19 @@ namespace cmdR.UI.ViewModels
 
         public string Command { get; set; }
         public string Output { get; set; }
-        public string Prompt { get { return _cmdR.State.CmdPrompt; } set { } }
+        public string Prompt { get { return _cmdR == null ? "c:\\users\\andy\\" : _cmdR.State.CmdPrompt; } set { } }
 
 
         public IList<string> CommandHistory { get; set; }
         public int? CommandHistoryPointer { get; set; }
 
+        public MainWindowViewModel()
+        {
+            Command = "";
+            Output = "";
 
+            CommandHistory = new List<string>();
+        }
         public MainWindowViewModel(Dispatcher dispatcher) : base(dispatcher)
         {
             _cmdR = new CmdR(console: new WpfConsole(this));
@@ -29,6 +35,9 @@ namespace cmdR.UI.ViewModels
             _cmdR.State.CmdPrompt = GetUserDirectory();
             _cmdR.State.Variables.Add("path", GetUserDirectory());
             _cmdR.Console.WriteLine("Welcome to CmdR :D");
+
+            Command = "";
+            Output = "";
 
             CommandHistory = new List<string>();
             CommandHistoryPointer = null;
