@@ -26,8 +26,8 @@ namespace cmdR.UI.CmdRModules
         {
             var filematch = new Regex(param["file-regex-match"]);
 
-            var files = Directory.GetFiles((string)cmdR.State.Variables["Path"]).Where(x => filematch.IsMatch(x)).ToList();
-            var regexMatches = GetRegexMatchAndReplaces(File.ReadAllText(param["regex-file"]));
+            var files = Directory.GetFiles((string)cmdR.State.Variables["path"]).Where(x => filematch.IsMatch(x)).ToList();
+            var regexMatches = GetRegexMatchAndReplaces(File.ReadAllText(Path.Combine((string)cmdR.State.Variables["path"], param["regex-file"])));
 
             if (files.Count == 0)
             {
@@ -62,10 +62,10 @@ namespace cmdR.UI.CmdRModules
         {
             var results = new List<RegexMatchAndReplace>();
 
-            var individualRegex = text.Split(new [] { "=== END ====" }, StringSplitOptions.RemoveEmptyEntries);
+            var individualRegex = text.Split(new [] { "=== END ===\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var item in individualRegex)
             {
-                var sections = item.Split(new [] { "=== REPLACE ===" }, StringSplitOptions.RemoveEmptyEntries);
+                var sections = item.Split(new[] { "=== REPLACE ===\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 results.Add(new RegexMatchAndReplace { Match = sections[0], Replace = sections[1] });
             }
 
