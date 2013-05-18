@@ -7,6 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+
+
 namespace cmdR.UI.CmdRModules
 {
     public class FileModule : DirectoryModuleBase, ICmdRModule
@@ -17,7 +19,59 @@ namespace cmdR.UI.CmdRModules
             cmdR.RegisterRoute("rn match replace", Rename, "Renames a file using a regex match and replace, if you want to run a test first use the switch /test", overwriteRoutes);
             cmdR.RegisterRoute("handles path?", Handles, "Lists the Open Handles on a directory", overwriteRoutes);
             cmdR.RegisterRoute("touch regex? date?", Touch, "Updates the Last Modified Date of all files in the current directory, you can use /modifed /created /accessed to choose which attributes to modify", overwriteRoutes);
+            cmdR.RegisterRoute("re-multi regex-file file-regex-match", RegexMultiMatchAndReplace, "Opens all the files matching the file-regex-match and runs all the regex-file against it", overwriteRoutes);
         }
+
+        public void RegexMultiMatchAndReplace(IDictionary<string, string> param, CmdR cmdR)
+        {
+            var filematch = new Regex(param["file-regex-match"]);
+
+            var files = Directory.GetFiles((string)cmdR.State.Variables["Path"]).Where(x => filematch.IsMatch(x)).ToList();
+            var regexMatches = GetRegexMatchAndReplaces(File.ReadAllText(param["regex-file"]));
+
+            if (files.Count == 0)
+            {
+                cmdR.Console.WriteLine("No files matched the regex pattern {0}", param["file-regex-match"]);
+                return;
+            }
+
+            if (regexMatches.Count == 0)
+            {
+                cmdR.Console.WriteLine("No regex match and replaces where found in the regex file {0}", param["regex-file"]);
+                return;
+            }
+
+            var count = 0;
+            foreach (var file in files)
+            {
+                cmdR.Console.WriteLine("Processing {0}", file);
+                var content = File.ReadAllText(file);
+                foreach (var match in regexMatches)
+                {
+                    content = match.GetRegex().Replace(content, match.Replace);
+                }
+
+                File.WriteAllText(file, content);
+                count++;
+            }
+
+            cmdR.Console.WriteLine("{0} files processed", count);
+        }
+
+        private List<RegexMatchAndReplace> GetRegexMatchAndReplaces(string text)
+        {
+            var results = new List<RegexMatchAndReplace>();
+
+            var individualRegex = text.Split(new [] { "=== END ====" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var item in individualRegex)
+            {
+                var sections = item.Split(new [] { "=== REPLACE ===" }, StringSplitOptions.RemoveEmptyEntries);
+                results.Add(new RegexMatchAndReplace { Match = sections[0], Replace = sections[1] });
+            }
+
+            return results;
+        }
+
 
         private void Touch(IDictionary<string, string> param, CmdR cmdR)
         {
