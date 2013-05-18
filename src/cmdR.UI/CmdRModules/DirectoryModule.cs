@@ -44,7 +44,7 @@ namespace cmdR.UI.CmdRModules
             cmd.State.Variables["path"] = path;
             cmd.State.CmdPrompt = path;
 
-            cmd.Console.WriteLine("working directory: {0}\n", cmd.State.Variables["path"]);
+            cmd.Console.WriteLine("<Run>working directory: </Run><Run Foreground=\"Yellow\">{0}</Run>", cmd.State.Variables["path"].ToString().XmlEscape());
         }
 
         private void List(IDictionary<string, string> param, CmdR cmd)

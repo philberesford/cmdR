@@ -108,6 +108,7 @@
     <Compile Include="CmdRModules\RegexMatchAndReplace.cs" />
     <Compile Include="ViewModels\IWpfViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WpfConsole.cs" />
     <Compile Include="Win32Processes.cs" />

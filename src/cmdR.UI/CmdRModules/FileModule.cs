@@ -182,7 +182,7 @@ namespace cmdR.UI.CmdRModules
                 var count = 0;
                 foreach (var line in File.ReadLines(path).Take(take))
                 {
-                    cmdR.Console.WriteLine(" {1}.  {0}", line, ++count);
+                    cmdR.Console.WriteLine(" {1}.  {0}", line.ToString().PadRight(3), ++count);
                 }
             }
             else cmdR.Console.WriteLine("{0} doesn't exist", param["file"]);

@@ -25,22 +25,20 @@ namespace cmdR.UI.ViewModels
         {
             Command = "";
             Output = "";
-
             CommandHistory = new List<string>();
         }
+
         public MainWindowViewModel(Dispatcher dispatcher) : base(dispatcher)
         {
-            _cmdR = new CmdR(console: new WpfConsole(this));
+            Command = "";
+            Output = "";
+            CommandHistory = new List<string>();
+            CommandHistoryPointer = null;
 
+            _cmdR = new CmdR(console: new WpfConsole(this));
             _cmdR.State.CmdPrompt = GetUserDirectory();
             _cmdR.State.Variables.Add("path", GetUserDirectory());
             _cmdR.Console.WriteLine("Welcome to CmdR :D");
-
-            Command = "";
-            Output = "";
-
-            CommandHistory = new List<string>();
-            CommandHistoryPointer = null;
             
             InvokeOnBackgroundThread(() => {
                     _cmdR.Console.WriteLine("Discovering commands, please wait...");
@@ -57,6 +55,7 @@ namespace cmdR.UI.ViewModels
             return Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)).FullName;
         }
 
+
         public void HandleReturnKeyPressed()
         {
             if (string.IsNullOrEmpty(Command))
@@ -68,6 +67,7 @@ namespace cmdR.UI.ViewModels
                     {
                         CommandHistory.Add(Command);
 
+                        _cmdR.Console.WriteLine("<Run FontWeight=\"Bold\">{0}</Run>", Command.XmlEscape());
                         _cmdR.ExecuteCommand(Command);
                         
                         Command = string.Empty;
