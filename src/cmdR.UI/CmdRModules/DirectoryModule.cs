@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 
 namespace cmdR.UI.CmdRModules
 {
-    public class DirectoryModule : DirectoryModuleBase, ICmdRModule
+    public class Module : ModuleBase, ICmdRModule
     {
-        private CmdR _cmdR;
-
-
-        public DirectoryModule()
+        public Module()
         {
         }
 
-        public DirectoryModule(CmdR cmdR)
+        public Module(CmdR cmdR)
         {
             Initalise(cmdR, false);
         }
@@ -57,6 +54,8 @@ namespace cmdR.UI.CmdRModules
                 return;
             }
 
+            _cmdR.Console.WriteLine("");
+
             if (param.ContainsKey("search"))
             {
                 var matches = 0;
@@ -64,13 +63,13 @@ namespace cmdR.UI.CmdRModules
 
                 foreach (var dir in Directory.GetDirectories(path).Where(dir => regex.IsMatch(dir)))
                 {
-                    cmd.Console.WriteLine("{0}", dir);
+                    WriteOrange(GetEndOfPath(dir + "\t"));
                     matches++;
                 }
 
                 foreach (var file in Directory.GetFiles(path).Where(file => regex.IsMatch(file)))
                 {
-                    cmd.Console.WriteLine("{0}", file);
+                    WritePink(GetEndOfPath(file + "\t"));
                     matches++;
                 }
 
@@ -79,13 +78,17 @@ namespace cmdR.UI.CmdRModules
             else
             {
                 foreach (var dir in Directory.GetDirectories(path))
-                    cmd.Console.WriteLine("{0}", dir);
+                    WriteYellow(GetEndOfPath(dir + "\t"));
 
                 foreach (var file in Directory.GetFiles(path))
-                    cmd.Console.WriteLine("{0}", file);
+                    WriteMagenta(GetEndOfPath(file + "\t"));
             }
+        }
 
-            cmd.Console.WriteLine("");
+        protected string GetEndOfPath(string path)
+        {
+            var getEndOfPath = new Regex(@"(?<=\\)[^\\]{1,}$");
+            return getEndOfPath.IsMatch(path) ? getEndOfPath.Matches(path)[0].ToString() : path;
         }
     }
 }
