@@ -1,21 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace cmdR.UI.CmdRModules
 {
-    public class DirectoryModuleBase
+    public class ModuleBase
     {
         protected CmdR _cmdR;
 
 
-        protected string GetPath(string path, IDictionary<string, object> variables)
+        protected string GetEndOfPath(string path)
         {
-            var result = "";
+            var getEndOfPath = new Regex(@"(?<=\\)[^\\]{1,}$");
+            return getEndOfPath.IsMatch(path) ? getEndOfPath.Matches(path)[0].ToString() : path;
+        }
 
-            if (Directory.Exists(Path.Combine((string)variables["path"], path)))
-                return new DirectoryInfo(Path.Combine((string)variables["path"], path)).FullName;
-            
-            return Directory.Exists(path) ? path : null;
+        protected string GetPath(string path)
+        {
+            var combinedPath = Path.Combine((string)_cmdR.State.Variables["path"], path);
+
+            if (Directory.Exists(combinedPath))
+                return new DirectoryInfo(combinedPath).FullName;
+
+            if (Directory.Exists(path))
+                return new DirectoryInfo(path).FullName;
+
+            if (File.Exists(combinedPath))
+                return new FileInfo(combinedPath).FullName;
+
+            if (File.Exists(path))
+                return new FileInfo(path).FullName;
+
+            return null;
         }
 
         protected void WriteYellow(string output)

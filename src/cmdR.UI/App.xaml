@@ -7,6 +7,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="BaseWindowTheme.xaml" />
+                <ResourceDictionary Source="ResourceBase.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

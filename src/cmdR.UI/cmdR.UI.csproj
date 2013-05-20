@@ -58,7 +58,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>714E99A36AEF6D0C5E168DF4C6E63E2028E367FD</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>0F1E3FD9C01D882E58376C91E8907B41A4669F5D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>cmdR.UI_TemporaryKey.pfx</ManifestKeyFile>
@@ -103,8 +103,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CmdRModules\DirectoryModule.cs" />
-    <Compile Include="CmdRModules\DirectoryModuleBase.cs" />
+    <Compile Include="CmdRModules\ModuleBase.cs" />
     <Compile Include="CmdRModules\FileModule.cs" />
+    <Compile Include="CmdRModules\GrepModule.cs" />
     <Compile Include="CmdRModules\RegexMatchAndReplace.cs" />
     <Compile Include="ViewModels\IWpfViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -128,6 +129,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ResourceBase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Resource Include="MainWindowViewModel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -151,6 +156,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="cmdR.UI_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

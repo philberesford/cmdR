@@ -33,9 +33,10 @@ namespace cmdR.UI
             this.CommandBindings.Add(new CommandBinding(SystemCommands.MinimizeWindowCommand, this.OnMinimizeWindow, this.OnCanMinimizeWindow));
             this.CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, this.OnRestoreWindow, this.OnCanResizeWindow));
 
+            FocusManager.SetFocusedElement(this, _command);
 
 
-            _model = new MainWindowViewModel(Dispatcher);
+            _model = new MainWindowViewModel(Dispatcher, this);
             DataContext = _model;
 
             //var timer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 2)};

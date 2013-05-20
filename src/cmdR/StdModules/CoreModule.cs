@@ -40,7 +40,6 @@ namespace cmdR.StdModules
                     foreach (var p in route.GetParameters())
                         cmdR.Console.Write(p.Value == ParameterType.Required ? " {0}" : " {0}?", p.Key);
 
-                    cmdR.Console.WriteLine("");
                     if (!string.IsNullOrEmpty(route.Description))
                         cmdR.Console.WriteLine("  " + route.Description);
                 }
@@ -48,12 +47,8 @@ namespace cmdR.StdModules
             }
             else
             {
-                cmdR.Console.WriteLine("");
-
                 foreach (var route in cmdR.State.Routes)
                     cmdR.Console.Write("{0}", route.Name.PadRight(20));
-
-                cmdR.Console.WriteLine("");
             }
         }
 

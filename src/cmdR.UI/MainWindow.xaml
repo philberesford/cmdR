@@ -19,10 +19,10 @@
         </Grid.RowDefinitions>
 
         
-        <Rectangle Fill="#FF242424" Grid.Row="0" />
+        <Rectangle Fill="{StaticResource AppDarkBrush02}" Grid.Row="0" />
         <ScrollViewer Name="_scrollViewer" Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <toolkit:RichTextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" FontFamily="Consolas"
-                         Foreground="DarkOrange" Text="{Binding Output}"  Name="_output"  IsReadOnly="True" IsReadOnlyCaretVisible="False"
+                         Foreground="{StaticResource AppGreenBrush}" Text="{Binding Output}"  Name="_output"  IsReadOnly="True" IsReadOnlyCaretVisible="False"
                          Background="Transparent" BorderThickness="0" FontSize="15">
 
                 <toolkit:RichTextBox.TextFormatter>
@@ -31,15 +31,15 @@
             </toolkit:RichTextBox>
         </ScrollViewer>
 
-        
-        <Rectangle Fill="#FF121212" Grid.Row="1" />
+
+        <Rectangle Fill="{StaticResource AppDarkBrush03}" Grid.Row="1" />
         <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" TextWrapping="Wrap" FontFamily="Consolas"
-                   Foreground="DarkOrange" Text="{Binding Prompt}" Grid.Row="1" FontSize="15" />
+                   Foreground="{StaticResource AppBlueBrush}" Text="{Binding Prompt}" Grid.Row="1" FontSize="15" />
 
 
         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Grid.Row="2" FontFamily="Consolas" 
-                 Background="#ff000000" Foreground="DarkOrange" KeyUp="OnKeyUpHandler" BorderBrush="#ff000000"
-                 Text="{Binding Command, Mode=TwoWay}"  BorderThickness="0" FontSize="15" />
+                 Background="{StaticResource AppDarkBrush01}" Foreground="{StaticResource AppBlueBrush}" KeyUp="OnKeyUpHandler" BorderBrush="#ff000000"
+                 Text="{Binding Command, Mode=TwoWay}"  BorderThickness="0" FontSize="15" Name="_command" />
 
     </Grid>
 </Window>

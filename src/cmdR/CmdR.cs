@@ -131,8 +131,6 @@ namespace cmdR
 
         private void ComplieAndLoadScripts(bool overwriteRoutes)
         {
-            Console.WriteLine("Loading and Compiling CSX Scripts");
-
             var compileResult = RoslynScriptFactory.CompileScriptFiles(@".\Plugins\Scripts\");
             if (compileResult.Success)
             {
@@ -162,16 +160,12 @@ namespace cmdR
 
         private void LoadMefPlugins()
         {
-            Console.WriteLine("Loading MEF plugins \\plugins\\mef");
-            
             var mefFactory = new MefFactory();
             var pluginCount = mefFactory.LoadPlugins();
         }
 
         private void RegisterModules(bool overwriteRoutes)
         {
-            _console.WriteLine("Initalising Modules");
-
             var type = typeof(ICmdRModule);
             var modules = AppDomain.CurrentDomain.GetAssemblies()
                                    .ToList()
@@ -197,8 +191,6 @@ namespace cmdR
                     Console.WriteLine("Error loading MODULE: {0}\nException: {1}", module.GetType().FullName, e.Message);
                 }
             }
-
-            Console.WriteLine("{0} modules loaded", count);
         }
 
 
@@ -209,8 +201,6 @@ namespace cmdR
 
         private void RegisterCommands(IEnumerable<ICmdRCommand> commands, bool overwriteRoutes)
         {
-            _console.WriteLine("Registering Commands");
-
             var count = 0;
             foreach (var cmd in commands)
             {
@@ -224,8 +214,6 @@ namespace cmdR
                     Console.WriteLine("Error loading COMMAND: {0}\nException: {1}", cmd.GetType().FullName, e.Message);
                 }
             }
-
-            Console.WriteLine("{0} commands loaded", count);
         }
 
         private IEnumerable<ICmdRCommand> FindAllTypesImplementingICmdRCommand()

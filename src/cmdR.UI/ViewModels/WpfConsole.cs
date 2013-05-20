@@ -30,7 +30,8 @@ namespace cmdR.UI.ViewModels
             if (!_viewmodel.Output.Contains("<Paragraph>"))
                 WriteLine(line, param);
 
-             _viewmodel.Output = _viewmodel.Output.Replace("</Paragraph>\n</Section>", string.Format("\t{0}\n</Section>", WrapText(line, param)));
+            _viewmodel.Output = _viewmodel.Output.Replace("</Paragraph>\n</Section>", string.Format("{0}\n</Section>", WrapText(line, param)));
+            _viewmodel.RaiseOutputChanged();
         }
 
         public void Write(string line)
@@ -39,18 +40,16 @@ namespace cmdR.UI.ViewModels
             if (!_viewmodel.Output.Contains("<Paragraph>"))
                 WriteLine(line);
 
-            _viewmodel.Output = _viewmodel.Output.Replace("</Paragraph>\n</Section>", string.Format("\t{0}\n</Section>", WrapText(line)));
+            _viewmodel.Output = _viewmodel.Output.Replace("</Paragraph>\n</Section>", string.Format("{0}\n</Section>", WrapText(line)));
         }
 
         public void WriteLine(string line, params object[] param)
         {
-            var text = string.Format("<Paragraph><Run>{0}</Run></Paragraph>", string.Format(line, param));
             _viewmodel.Output = _viewmodel.Output.Replace("</Section>", string.Format("\t<Paragraph>{0}\n</Section>", WrapText(line, param)));
         }
 
         public void WriteLine(string line)
         {
-            var text = string.Format("<Paragraph><Run>{0}</Run></Paragraph>", line);
             _viewmodel.Output = _viewmodel.Output.Replace("</Section>", string.Format("\t<Paragraph>{0}\n</Section>", WrapText(line)));
         }
     }

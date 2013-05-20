@@ -6,70 +6,98 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
+using cmdR.IO;
 
 
 namespace cmdR.UI.CmdRModules
 {
-    public class FileModule : DirectoryModuleBase, ICmdRModule
+    public class FileModule : ModuleBase, ICmdRModule
     {
         public void Initalise(CmdR cmdR, bool overwriteRoutes)
         {
+            _cmdR = cmdR;
+
             cmdR.RegisterRoute("head file rows?", Head, "Previews the first n lines of a file, n defaults to 10, but you can specify the number of rows to read", overwriteRoutes);
-            cmdR.RegisterRoute("rn match replace", Rename, "Renames a file using a regex match and replace, if you want to run a test first use the switch /test", overwriteRoutes);
+            cmdR.RegisterRoute("rn match replace", Rename, "Renames a file using a regex match and replace\n/test if you want to run a test first", overwriteRoutes);
             cmdR.RegisterRoute("handles path?", Handles, "Lists the Open Handles on a directory", overwriteRoutes);
-            cmdR.RegisterRoute("touch regex? date?", Touch, "Updates the Last Modified Date of all files in the current directory, you can use /modifed /created /accessed to choose which attributes to modify", overwriteRoutes);
-            cmdR.RegisterRoute("re-multi regex-file file-regex-match", RegexMultiMatchAndReplace, "Opens all the files matching the file-regex-match and runs all the regex-file against it", overwriteRoutes);
+            cmdR.RegisterRoute("touch regex? date?", Touch, "Updates the Last Modified Date of all files in the current directory\n/modifed sets the modified date (default)\n/created modifies the file created date\n/accessed modifies the last accessed datetime", overwriteRoutes);
+            cmdR.RegisterRoute("mkf file", MakeFile, "Creates a file", overwriteRoutes);
+            cmdR.RegisterRoute("rmf match", RemoveFiles, "Deletes all files matching the regex\n/test to run a test without modifying the system", overwriteRoutes);
+            cmdR.RegisterRoute("find match", Find, "Finds all file names matching a given regex\n/recurse to search in sub directories", overwriteRoutes);
         }
 
-        public void RegexMultiMatchAndReplace(IDictionary<string, string> param, CmdR cmdR)
+        private void Find(IDictionary<string, string> param, CmdR cmdR)
         {
-            var filematch = new Regex(param["file-regex-match"]);
-
-            var files = Directory.GetFiles((string)cmdR.State.Variables["path"]).Where(x => filematch.IsMatch(x)).ToList();
-            var regexMatches = GetRegexMatchAndReplaces(File.ReadAllText(Path.Combine((string)cmdR.State.Variables["path"], param["regex-file"])));
-
-            if (files.Count == 0)
-            {
-                cmdR.Console.WriteLine("No files matched the regex pattern {0}", param["file-regex-match"]);
-                return;
-            }
-
-            if (regexMatches.Count == 0)
-            {
-                cmdR.Console.WriteLine("No regex match and replaces where found in the regex file {0}", param["regex-file"]);
-                return;
-            }
-
+            var match = new Regex(param["match"]);
             var count = 0;
-            foreach (var file in files)
-            {
-                cmdR.Console.WriteLine("Processing {0}", file);
-                var content = File.ReadAllText(file);
-                foreach (var match in regexMatches)
-                {
-                    content = match.GetRegex().Replace(content, match.Replace);
-                }
 
-                File.WriteAllText(file, content);
-                count++;
-            }
+            if (param.ContainsKey("/recurse"))
+                count = FindInDirectories((string)cmdR.State.Variables["path"], match);
+            else
+                count = FindFilesIn((string)cmdR.State.Variables["path"], match);
 
-            cmdR.Console.WriteLine("{0} files processed", count);
+            if (count == 0)
+                WriteLineYellow("No files found");
+            else
+                WriteLineYellow(string.Format("{0} files found", count));
         }
 
-        private List<RegexMatchAndReplace> GetRegexMatchAndReplaces(string text)
+        private int FindInDirectories(string path, Regex match)
         {
-            var results = new List<RegexMatchAndReplace>();
-
-            var individualRegex = text.Split(new [] { "=== END ===\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var item in individualRegex)
+            var count = 0;
+            foreach (var directory in Directory.GetDirectories(path))
             {
-                var sections = item.Split(new[] { "=== REPLACE ===\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                results.Add(new RegexMatchAndReplace { Match = sections[0], Replace = sections[1] });
+                try
+                {
+                    count += FindFilesIn(directory, match);
+                    FindInDirectories(directory, match);
+                }
+                catch (Exception e)
+                {
+                    WriteLineRed(string.Format("An error occurred while trying to access \\{0}", GetEndOfPath(path)));
+                    WriteLineRed(string.Format("{0}", e.Message));
+
+                    return count;
+                }
             }
 
-            return results;
+            return count;
+        }
+
+        private int FindFilesIn(string path, Regex match)
+        {
+            var count = 0;
+            foreach (var file in Directory.GetFiles(path))
+            {
+                if (match.IsMatch(file))
+                {
+                    WriteLineMagenta(file);
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+
+        private void RemoveFiles(IDictionary<string, string> param, CmdR cmdR)
+        {
+            var match = new Regex(param["match"]);
+            foreach (var file in Directory.GetFiles((string)cmdR.State.Variables["path"]))
+            {
+                if (match.IsMatch(file))
+                {
+                    if (param.ContainsKey("/test"))
+                        cmdR.Console.WriteLine(file);
+                    else
+                        File.Delete(file);
+                }
+            }
+        }
+
+        private void MakeFile(IDictionary<string, string> param, CmdR cmdR)
+        {
+            File.Create(Path.Combine((string)cmdR.State.Variables["path"], param["file"]));
         }
 
 
@@ -113,7 +141,7 @@ namespace cmdR.UI.CmdRModules
 
         private void Handles(IDictionary<string, string> param, CmdR cmdR)
         {
-            var path = param.ContainsKey("path") ? GetPath(param["path"], cmdR.State.Variables) : (string)cmdR.State.Variables["path"];
+            var path = param.ContainsKey("path") ? GetPath(param["path"]) : (string)cmdR.State.Variables["path"];
 
             if (!Directory.Exists(path))
             {
@@ -177,17 +205,13 @@ namespace cmdR.UI.CmdRModules
 
             if (File.Exists(path))
             {
-                cmdR.Console.WriteLine("PREVIEWING THE FIRST {0} LINES OF {1}", take, param["file"]);
-
                 var count = 0;
                 foreach (var line in File.ReadLines(path).Take(take))
                 {
-                    cmdR.Console.WriteLine(" {1}.  {0}", line.ToString().PadRight(3), ++count);
+                    cmdR.Console.WriteLine(" {1}.  {0}", line, ++count);
                 }
             }
             else cmdR.Console.WriteLine("{0} doesn't exist", param["file"]);
-
-            cmdR.Console.WriteLine("");
         }
     }
 }
