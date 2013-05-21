@@ -48,6 +48,13 @@ namespace cmdR.UI
             //timer.Start();
         }
 
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            _model.SaveSettings();
+
+            base.OnClosing(e);
+        }
+
         private void OnKeyUpHandler(object sender, KeyEventArgs e)
         {
             switch (e.Key)

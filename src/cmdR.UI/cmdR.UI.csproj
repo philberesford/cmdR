@@ -77,6 +77,9 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\packages\ServiceStack.Text.3.9.46\lib\net35\ServiceStack.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -102,11 +105,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CmdRModules\DiffModule.cs" />
     <Compile Include="CmdRModules\DirectoryModule.cs" />
     <Compile Include="CmdRModules\ModuleBase.cs" />
     <Compile Include="CmdRModules\FileModule.cs" />
     <Compile Include="CmdRModules\GrepModule.cs" />
     <Compile Include="CmdRModules\RegexMatchAndReplace.cs" />
+    <Compile Include="ViewModels\AppSettings.cs" />
     <Compile Include="ViewModels\IWpfViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="StringExtensions.cs" />

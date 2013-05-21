@@ -120,7 +120,7 @@ namespace cmdR.UI.CmdRModules
                     WriteOrange(string.Format("\\{0}   ", GetEndOfPath(dir.PadLeft(10))));
 
                 foreach (var file in Directory.GetFiles(path))
-                    WriteMagenta(string.Format("\\{0}   ", GetEndOfPath(file.PadLeft(10))));
+                    WritePink(string.Format("\\{0}   ", GetEndOfPath(file.PadLeft(10))));
             }
         }
     }

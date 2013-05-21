@@ -34,6 +34,25 @@ namespace cmdR.UI.CmdRModules
             return null;
         }
 
+
+        protected bool IsDirectory(string path)
+        {
+            var combinedPath = Path.Combine((string)_cmdR.State.Variables["path"], path);
+            return Directory.Exists(combinedPath) || Directory.Exists(path);
+        }
+
+        protected bool IsFile(string path)
+        {
+            var combinedPath = Path.Combine((string)_cmdR.State.Variables["path"], path);
+            return File.Exists(combinedPath) || File.Exists(path);
+        }
+
+
+        protected void WriteWhite(string output)
+        {
+            Write("#FFF2F2F2", output);
+        }
+
         protected void WriteYellow(string output)
         {
             Write("Yellow", output);
@@ -70,6 +89,11 @@ namespace cmdR.UI.CmdRModules
         }
 
 
+
+        protected void WriteLineWhite(string output)
+        {
+            WriteLine("#FFF2F2F2", output);
+        }
 
         protected void WriteLineYellow(string output)
         {

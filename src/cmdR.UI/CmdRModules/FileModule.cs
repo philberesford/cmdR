@@ -71,7 +71,7 @@ namespace cmdR.UI.CmdRModules
             {
                 if (match.IsMatch(file))
                 {
-                    WriteLineMagenta(file);
+                    WriteLinePink(file);
                     count++;
                 }
             }

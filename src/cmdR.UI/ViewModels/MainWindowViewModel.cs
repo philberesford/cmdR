@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using ServiceStack.Text;
 using cmdR.CommandParsing;
+using cmdR.UI.Properties;
 
 namespace cmdR.UI.ViewModels
 {
@@ -20,6 +22,9 @@ namespace cmdR.UI.ViewModels
 
         public IList<string> CommandHistory { get; set; }
         public int? CommandHistoryPointer { get; set; }
+
+        public AppSettings Settings { get; set; }
+
 
         public MainWindowViewModel()
         {
@@ -36,10 +41,15 @@ namespace cmdR.UI.ViewModels
             CommandHistory = new List<string>();
             CommandHistoryPointer = null;
 
+            LoadSettings();
+
             _cmdR = new CmdR(console: new WpfConsole(this));
-            _cmdR.State.CmdPrompt = GetUserDirectory();
-            _cmdR.State.Variables.Add("path", GetUserDirectory());
             _cmdR.Console.WriteLine("<Run FontWeight=\"Bold\" Foreground=\"#FFE671B8\">Welcome to CmdR :D</Run>");
+
+            _cmdR.State.CmdPrompt = Settings.Path ?? GetUserDirectory();
+            _cmdR.State.Variables.Add("path", Settings.Path ?? GetUserDirectory());
+
+            CommandHistory = Settings.Last10Commands ?? new List<string>();
             
             InvokeOnBackgroundThread(() => {
                     _cmdR.Console.WriteLine("Discovering commands, please wait...");
@@ -49,6 +59,26 @@ namespace cmdR.UI.ViewModels
                     NotifyPropertyChanged("Output");
                     NotifyPropertyChanged("Prompt");
                 });
+        }
+
+        public void SaveSettings()
+        {
+            Settings.Path = (string)_cmdR.State.Variables["path"];
+            Settings.Last10Commands = CommandHistory.Skip(CommandHistory.Count - 10)
+                                                    .Take(10)
+                                                    .ToList();
+
+            File.WriteAllText("settings.json", Settings.ToJson());
+        }
+
+        private void LoadSettings()
+        {
+            var settings = "";
+
+            if (File.Exists("settings.json"))
+                settings = File.ReadAllText("settings.json");
+
+            Settings = string.IsNullOrEmpty(settings) ? new AppSettings() : settings.FromJson<AppSettings>();
         }
 
         private string GetUserDirectory()
