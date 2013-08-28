@@ -10,12 +10,18 @@ namespace cmdR.UI.ViewModels
         public WpfConsole(IWpfViewModel viewModel)
         {
             _viewmodel = viewModel;
-            _viewmodel.Output = "<Section xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xml:space=\"preserve\" LineHeight=\"1\">\n</Section>";
+
+            Clear();
         }
 
         public string ReadLine()
         {
             throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            _viewmodel.Output = "<Section xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xml:space=\"preserve\" LineHeight=\"1\">\n</Section>";
         }
 
         private string WrapText(string text, params object[] param)
@@ -41,16 +47,19 @@ namespace cmdR.UI.ViewModels
                 WriteLine(line);
 
             _viewmodel.Output = _viewmodel.Output.Replace("</Paragraph>\n</Section>", string.Format("{0}\n</Section>", WrapText(line)));
+            _viewmodel.RaiseOutputChanged();
         }
 
         public void WriteLine(string line, params object[] param)
         {
             _viewmodel.Output = _viewmodel.Output.Replace("</Section>", string.Format("\t<Paragraph>{0}\n</Section>", WrapText(line, param)));
+            _viewmodel.RaiseOutputChanged();
         }
 
         public void WriteLine(string line)
         {
             _viewmodel.Output = _viewmodel.Output.Replace("</Section>", string.Format("\t<Paragraph>{0}\n</Section>", WrapText(line)));
+            _viewmodel.RaiseOutputChanged();
         }
     }
 }

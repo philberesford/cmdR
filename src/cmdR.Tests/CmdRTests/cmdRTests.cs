@@ -196,29 +196,6 @@ namespace cmdR.Tests.CmdRTests
         }
 
 
-        [Test]
-        public void Run_Help()
-        {
-            //todo: use moq to fake the console & state
-            var console = new FakeCmdRConsole("");
-
-            var cmdR = new CmdR(new OrderedCommandParser(), new Routing(), new RouteParser(), console, new CmdRState());
-
-            cmdR.RegisterRoute("cd", (p, con, state) =>
-                {
-                    state.CmdPrompt = "new prompt> ";
-                });
-
-            cmdR.Run(new string[] { "help" });
-
-            Assert.AreEqual("    help", console.ConsoleWindow[0]);
-            Assert.AreEqual("\n    lists all the commands\n", console.ConsoleWindow[1]);
-            Assert.AreEqual("    cd", console.ConsoleWindow[2]);
-            Assert.AreEqual("\n", console.ConsoleWindow[3]);
-            Assert.AreEqual("> ", console.ConsoleWindow[4]);
-        }
-
-
         //todo: test the state that we can modify the command prompt
     }
 

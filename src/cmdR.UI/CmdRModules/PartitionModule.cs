@@ -34,22 +34,54 @@ namespace cmdR.UI.CmdRModules
 
         private void TopAndTail(IDictionary<string, string> param, CmdR cmdR)
         {
-            
+            var pathRegex = new Regex(param["match"]);
+            var output = param["output"];
+            var take = int.Parse(param["take"]);
+
+            foreach (var file in Directory.GetFiles((string)_cmdR.State.Variables["path"]))
+            {
+                if (pathRegex.IsMatch(file))
+                {
+                    var count = File.ReadLines(file).Count();
+                    var top = File.ReadLines(file).Take(take).ToList();
+                    var tail = File.ReadLines(file).Skip(count - take).Take(take);
+
+                    File.WriteAllLines(pathRegex.Replace(file, output), top.Union(tail));
+                }
+            }
         }
 
         private void Tail(IDictionary<string, string> param, CmdR cmdR)
         {
-            throw new NotImplementedException();
+            var pathRegex = new Regex(param["match"]);
+            var output = param["output"];
+            var take = int.Parse(param["take"]);
+
+            foreach (var file in Directory.GetFiles((string)_cmdR.State.Variables["path"]))
+            {
+                if (pathRegex.IsMatch(file))
+                {
+                    var count = File.ReadLines(file).Count();
+                    var tail = File.ReadLines(file).Skip(count - take).Take(take);
+
+                    File.WriteAllLines(pathRegex.Replace(file, output), tail);
+                }
+            }
         }
 
         private void Top(IDictionary<string, string> param, CmdR cmdR)
         {
-            var pathRegex = new Regex(param["path-match"]);
+            var pathRegex = new Regex(param["match"]);
             var output = param["output"];
+            var take = int.Parse(param["take"]);
 
-            foreach (var file in Directory.GetFiles((string) _cmdR.State.Variables["path"]))
+            foreach (var file in Directory.GetFiles((string)_cmdR.State.Variables["path"]))
             {
-                
+                if (pathRegex.IsMatch(file))
+                {
+                    var lines = File.ReadLines(file).Take(take).ToArray();
+                    File.WriteAllLines(pathRegex.Replace(file, output), lines);
+                }
             }
         }
     }

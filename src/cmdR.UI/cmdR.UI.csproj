@@ -110,7 +110,10 @@
     <Compile Include="CmdRModules\ModuleBase.cs" />
     <Compile Include="CmdRModules\FileModule.cs" />
     <Compile Include="CmdRModules\GrepModule.cs" />
+    <Compile Include="CmdRModules\PartitionModule.cs" />
+    <Compile Include="CmdRModules\PingModule.cs" />
     <Compile Include="CmdRModules\RegexMatchAndReplace.cs" />
+    <Compile Include="CmdRModules\SystemModule.cs" />
     <Compile Include="ViewModels\AppSettings.cs" />
     <Compile Include="ViewModels\IWpfViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

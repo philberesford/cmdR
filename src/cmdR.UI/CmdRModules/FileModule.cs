@@ -18,12 +18,15 @@ namespace cmdR.UI.CmdRModules
             _cmdR = cmdR;
 
             cmdR.RegisterRoute("head file rows?", Head, "Previews the first n lines of a file, n defaults to 10, but you can specify the number of rows to read", overwriteRoutes);
-            cmdR.RegisterRoute("rn match replace", Rename, "Renames a file using a regex match and replace\n/test if you want to run a test first", overwriteRoutes);
+            cmdR.RegisterRoute("rn match replace", Rename, "Renames a file using a regex match and replace\n/t if you want to run a test first", overwriteRoutes);
+            
             cmdR.RegisterRoute("handles path?", Handles, "Lists the Open Handles on a directory", overwriteRoutes);
-            cmdR.RegisterRoute("touch regex? date?", Touch, "Updates the Last Modified Date of all files in the current directory\n/modifed sets the modified date (default)\n/created modifies the file created date\n/accessed modifies the last accessed datetime", overwriteRoutes);
+            cmdR.RegisterRoute("touch regex? date?", Touch, "Updates the Last Modified Date of all files in the current directory\n/modifed sets the modified date (default)\n/created modifies the file created date\n/accessed modifies the last accessed datetime\n/t to show which files would be touched without actually touching them", overwriteRoutes);
+            
             cmdR.RegisterRoute("mkf file", MakeFile, "Creates a file", overwriteRoutes);
-            cmdR.RegisterRoute("rmf match", RemoveFiles, "Deletes all files matching the regex\n/test to run a test without modifying the system", overwriteRoutes);
-            cmdR.RegisterRoute("find match", Find, "Finds all file names matching a given regex\n/recurse to search in sub directories", overwriteRoutes);
+            cmdR.RegisterRoute("rmf match", RemoveFiles, "Deletes all files matching the regex\n/t to run a test without modifying the system", overwriteRoutes);
+
+            cmdR.RegisterRoute("find match", Find, "Finds all file names matching a given regex\n/r to search in sub directories", overwriteRoutes);
         }
 
         private void Find(IDictionary<string, string> param, CmdR cmdR)
@@ -31,7 +34,7 @@ namespace cmdR.UI.CmdRModules
             var match = new Regex(param["match"]);
             var count = 0;
 
-            if (param.ContainsKey("/recurse"))
+            if (param.ContainsKey("/r"))
                 count = FindInDirectories((string)cmdR.State.Variables["path"], match);
             else
                 count = FindFilesIn((string)cmdR.State.Variables["path"], match);
@@ -50,7 +53,7 @@ namespace cmdR.UI.CmdRModules
                 try
                 {
                     count += FindFilesIn(directory, match);
-                    FindInDirectories(directory, match);
+                    count += FindInDirectories(directory, match);
                 }
                 catch (Exception e)
                 {
@@ -87,7 +90,7 @@ namespace cmdR.UI.CmdRModules
             {
                 if (match.IsMatch(file))
                 {
-                    if (param.ContainsKey("/test"))
+                    if (param.ContainsKey("/t"))
                         cmdR.Console.WriteLine(file);
                     else
                         File.Delete(file);
@@ -124,16 +127,25 @@ namespace cmdR.UI.CmdRModules
 
                 foreach (var file in Directory.GetFiles(path).Where(x => match != null && match.IsMatch(x)))
                 {
-                    if (modified)
-                        File.SetLastWriteTime(file, date);
+                    if (param.ContainsKey("/t"))
+                    {
+                        cmdR.Console.WriteLine("would touch {0}", file);
+                    }
+                    else
+                    {
+                        if (modified)
+                            File.SetLastWriteTime(file, date);
 
-                    if (created)
-                        File.SetLastAccessTime(file, date);
+                        if (created)
+                            File.SetLastAccessTime(file, date);
 
-                    if (accessed)
-                        File.SetCreationTime(file, date);
+                        if (accessed)
+                            File.SetCreationTime(file, date);
 
-                    cmdR.Console.WriteLine("touched {0}", file);
+                        cmdR.Console.WriteLine("touched {0}", file);
+                    }
+
+                    
                 }
             }
             else cmdR.Console.WriteLine("{0} does not exist", path);
@@ -170,7 +182,7 @@ namespace cmdR.UI.CmdRModules
 
             foreach (var file in Directory.GetFiles((string)cmdR.State.Variables["path"]).Where(file => match.IsMatch(file)))
             {
-                if (param.ContainsKey("/test"))
+                if (param.ContainsKey("/t"))
                 {
                     count++;
                     cmdR.Console.WriteLine(" {0} to {1}", file, match.Replace(file, param["replace"]));
@@ -192,7 +204,7 @@ namespace cmdR.UI.CmdRModules
                 }
             }
 
-            if (param.ContainsKey("/test"))
+            if (param.ContainsKey("/t"))
                 cmdR.Console.WriteLine("{0} files matched", count);
             else
                 cmdR.Console.WriteLine("{0} files renames with {1} errors", count, errors);

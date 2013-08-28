@@ -9,6 +9,25 @@ namespace cmdR.UI.CmdRModules
         protected CmdR _cmdR;
 
 
+
+        protected string ParseMarks(string input)
+        {
+            var marks = _cmdR.State.Variables["marks"] as IDictionary<string, string>;
+            if (marks == null)
+                return (string)_cmdR.State.Variables["path"];
+
+            foreach (var mark in marks)
+            {
+                var regex = string.Format("{{{0}}}", mark.Key);
+
+                if (Regex.IsMatch(input, regex))
+                    input = Regex.Replace(input, regex, mark.Key);
+            }
+
+            return input;
+        }
+
+
         protected string GetEndOfPath(string path)
         {
             var getEndOfPath = new Regex(@"(?<=\\)[^\\]{1,}$");
@@ -17,6 +36,8 @@ namespace cmdR.UI.CmdRModules
 
         protected string GetPath(string path)
         {
+            path = ParseMarks(path);
+
             var combinedPath = Path.Combine((string)_cmdR.State.Variables["path"], path);
 
             if (Directory.Exists(combinedPath))
@@ -37,12 +58,16 @@ namespace cmdR.UI.CmdRModules
 
         protected bool IsDirectory(string path)
         {
+            path = ParseMarks(path);
+
             var combinedPath = Path.Combine((string)_cmdR.State.Variables["path"], path);
             return Directory.Exists(combinedPath) || Directory.Exists(path);
         }
 
         protected bool IsFile(string path)
         {
+            path = ParseMarks(path);
+
             var combinedPath = Path.Combine((string)_cmdR.State.Variables["path"], path);
             return File.Exists(combinedPath) || File.Exists(path);
         }
