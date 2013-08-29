@@ -31,44 +31,86 @@ namespace cmdR.UI.CmdRModules
             cmdR.RegisterRoute("rnd match replace", RenameDirectory, "Renames a directory\n/t to run a test without modifying the system", overwriteRoutes);
             cmdR.RegisterRoute("rmd match", RemoveDirectory, "Rmeoves all directories matching the regex\n/all delete all subdirectories and files\n/t to run a test without modifying the system", overwriteRoutes);
 
-            cmdR.RegisterRoute("mark name path?", Mark, "Marks a directory for quick access, this can be used with other commands, for example [mark home] [cd {home}] or [mark me c:\\users\\andy] [cd {me}]", overwriteRoutes);
-            cmdR.RegisterRoute("mark-delete name", MarkDelete, "Delets the Mark from the list of stored marks", overwriteRoutes);
-        }
-
-        private void MarkDelete(IDictionary<string, string> param, CmdR cmdR)
-        {
-            var marks = _cmdR.State.Variables["marks"] as IDictionary<string, string>
-                      ?? new Dictionary<string, string>();
-
-            if (marks.ContainsKey(param["name"]))
-            {
-                marks.Remove(param["name"]);
-                WriteLineYellow(string.Format("Mark {0} deleted", param["name"]));
-            }
-            else WriteLineRed(string.Format("Mark {0} does not exists", param["name"]));
+            cmdR.RegisterRoute("mark name? path?", Mark, "Marks a directory for quick access, this can be used with other commands\n\tfor example [mark home] [cd {home}] or [mark me c:\\users\\andy] [cd {me}]\n\t/d to delete a mark", overwriteRoutes);
+            
+            // load the marks from the disks :D whoop
+            _cmdR.State.Variables["marks"] = LoadMarksFromDisk();
         }
 
 
         private void Mark(IDictionary<string, string> param, CmdR cmdR)
         {
+            if (param.ContainsKey("/d"))
+            {
+                if (param.ContainsKey("name"))
+                {
+                    var marks = GetMarks();
+                    marks.Remove(param["name"]);
+                    StoreMarksToDisk();
+
+                    WriteLineYellow(string.Format("mark {0} deleted", param["name"]));
+                }
+                else WriteLineRed("No name parameter supplied, you need to specify the marks name to delete it");
+
+                return;
+            }
+
             if (param.ContainsKey("path"))
+            {
                 StoreNewMark(param["name"], param["path"]);
+                WriteLineYellow(string.Format("mark {0} created", param["name"]));
+            }
+            else if (param.ContainsKey("name"))
+            {
+                StoreNewMark(param["name"], (string) cmdR.State.Variables["path"]);
+                WriteLineYellow(string.Format("mark {0} created", param["name"]));
+            }
             else
-                StoreNewMark(param["name"], (string)cmdR.State.Variables["path"]);
+            {
+                foreach (var mark in GetMarks())
+                    WriteLineGreen(string.Format("{0}\t{1}", mark.Key, mark.Value));
+            }
         }
 
 
         private void StoreNewMark(string name, string path)
         {
-            var marks = _cmdR.State.Variables["marks"] as IDictionary<string, string> 
-                      ?? new Dictionary<string, string>();
-
+            var marks = GetMarks();
             if (marks.ContainsKey(name))
                 marks[name] = path;
             else
                 marks.Add(name, path);
+
+            StoreMarksToDisk();
         }
 
+        private void StoreMarksToDisk()
+        {
+            var content = "";
+            foreach (var mark in GetMarks())
+                content = string.Format("{0}{1}{2}|{3}", content, Environment.NewLine, mark.Key, mark.Value);
+
+            File.WriteAllText(".\\marks.ini", content);
+        }
+
+
+        private IDictionary<string, string> LoadMarksFromDisk()
+        {
+            var marks = new Dictionary<string, string>();
+
+            if (File.Exists(".\\marks.ini"))
+            {
+                var content = File.ReadAllText(".\\marks.ini");
+                foreach (var line in content.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var kv = line.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (kv.Length == 2)
+                        marks.Add(kv[0], kv[1]);
+                }
+            }
+
+            return marks;
+        }
 
 
         private void RemoveDirectory(IDictionary<string, string> param, CmdR cmdR)

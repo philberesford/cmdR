@@ -20,7 +20,9 @@ namespace cmdR.UI.CmdRModules
             cmdR.RegisterRoute("head file rows?", Head, "Previews the first n lines of a file, n defaults to 10, but you can specify the number of rows to read", overwriteRoutes);
             cmdR.RegisterRoute("rn match replace", Rename, "Renames a file using a regex match and replace\n/t if you want to run a test first", overwriteRoutes);
             
-            cmdR.RegisterRoute("handles path?", Handles, "Lists the Open Handles on a directory", overwriteRoutes);
+            // doesnt work
+            //cmdR.RegisterRoute("handles path?", Handles, "Lists the Open Handles on a directory", overwriteRoutes);
+
             cmdR.RegisterRoute("touch regex? date?", Touch, "Updates the Last Modified Date of all files in the current directory\n/modifed sets the modified date (default)\n/created modifies the file created date\n/accessed modifies the last accessed datetime\n/t to show which files would be touched without actually touching them", overwriteRoutes);
             
             cmdR.RegisterRoute("mkf file", MakeFile, "Creates a file", overwriteRoutes);

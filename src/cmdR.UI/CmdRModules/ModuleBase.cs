@@ -8,20 +8,31 @@ namespace cmdR.UI.CmdRModules
     {
         protected CmdR _cmdR;
 
+        protected IDictionary<string, string> GetMarks()
+        {
+            if (!_cmdR.State.Variables.ContainsKey("marks"))
+                _cmdR.State.Variables["marks"] = new Dictionary<string, string>();
 
+            return _cmdR.State.Variables["marks"] as IDictionary<string, string>;
+        }
 
         protected string ParseMarks(string input)
         {
+            if (!_cmdR.State.Variables.ContainsKey("marks"))
+                return input;
+
+
             var marks = _cmdR.State.Variables["marks"] as IDictionary<string, string>;
             if (marks == null)
-                return (string)_cmdR.State.Variables["path"];
+                return input;
+
 
             foreach (var mark in marks)
             {
                 var regex = string.Format("{{{0}}}", mark.Key);
 
                 if (Regex.IsMatch(input, regex))
-                    input = Regex.Replace(input, regex, mark.Key);
+                    input = Regex.Replace(input, regex, mark.Value);
             }
 
             return input;
