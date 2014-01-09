@@ -68,7 +68,7 @@ namespace cmdR.UI.CmdRModules
             else
             {
                 foreach (var mark in GetMarks())
-                    WriteLineGreen(string.Format("{0}\t{1}", mark.Key, mark.Value));
+                    WriteLineGreen(string.Format("{0} {1}", mark.Key.PadRight(25), mark.Value));
             }
         }
 
@@ -164,7 +164,7 @@ namespace cmdR.UI.CmdRModules
             var path = GetPath(param["path"]);
             if (path == null)
             {
-                cmd.Console.WriteLine("{0} does not exist", param["path"]);
+                cmd.Console.WriteLine("{0} does not exist", ParseMarks(param["path"]));
                 return;
             }
 

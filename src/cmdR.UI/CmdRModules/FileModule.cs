@@ -135,19 +135,25 @@ namespace cmdR.UI.CmdRModules
                     }
                     else
                     {
-                        if (modified)
-                            File.SetLastWriteTime(file, date);
+                        try
+                        {
+                            if (modified)
+                                File.SetLastWriteTime(file, date);
 
-                        if (created)
-                            File.SetLastAccessTime(file, date);
+                            if (created)
+                                File.SetLastAccessTime(file, date);
 
-                        if (accessed)
-                            File.SetCreationTime(file, date);
+                            if (accessed)
+                                File.SetCreationTime(file, date);
 
-                        cmdR.Console.WriteLine("touched {0}", file);
+                            cmdR.Console.WriteLine("touched {0}", file);
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLineRed(string.Format("An exception was thrown while trying to touch {0}", file));
+                            WriteLineRed(string.Format("Exception: {0}", ex.Message));
+                        }
                     }
-
-                    
                 }
             }
             else cmdR.Console.WriteLine("{0} does not exist", path);
