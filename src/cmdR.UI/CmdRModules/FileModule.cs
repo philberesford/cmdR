@@ -88,15 +88,35 @@ namespace cmdR.UI.CmdRModules
         private void RemoveFiles(IDictionary<string, string> param, CmdR cmdR)
         {
             var match = new Regex(param["match"]);
-            foreach (var file in Directory.GetFiles((string)cmdR.State.Variables["path"]))
+            RemoveFiles((string)_cmdR.State.Variables["path"], param.ContainsKey("/r"), param.ContainsKey("/t"), match);
+        }
+
+        private void RemoveFiles(string path, bool recurse, bool test, Regex match)
+        {
+            foreach (var file in Directory.GetFiles(path))
             {
                 if (match.IsMatch(file))
                 {
-                    if (param.ContainsKey("/t"))
-                        cmdR.Console.WriteLine(file);
+                    if (test)
+                        _cmdR.Console.WriteLine(file);
                     else
-                        File.Delete(file);
+                        try
+                        {
+                            File.Delete(file);
+                            WriteLineYellow(string.Format("\tdeleted {0}", file));
+                        }
+                        catch (Exception e)
+                        {
+                            WriteLineOrange(string.Format("\tunable to delete the file: {0}", file));
+                            WriteLineOrange(string.Format("\terror message: {0}", e.Message));
+                        }
                 }
+            }
+
+            if (recurse)
+            {
+                foreach (var directory in Directory.GetDirectories(path))
+                    RemoveFiles(directory, true, test, match);
             }
         }
 
